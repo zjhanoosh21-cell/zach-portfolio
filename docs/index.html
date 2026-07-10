@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zach Hanoosh — Portfolio</title>
+<meta name="description" content="Full-stack developer and AI-systems builder. Production client software, AI automations, and live demos you can click through.">
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --surface: #ffffff;
+    --ink: #16202c;
+    --ink-2: #4a5768;
+    --ink-3: #8b96a5;
+    --line: #e4e8ee;
+    --accent: #1a6bbf;
+    --accent-ink: #ffffff;
+    --chip-bg: #eef3f9;
+    --good: #17805c;
+    --good-bg: #e7f5ef;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1620;
+      --surface: #172130;
+      --ink: #e8edf4;
+      --ink-2: #aab6c6;
+      --ink-3: #6c7889;
+      --line: #263243;
+      --accent: #4ea0e8;
+      --accent-ink: #0d1521;
+      --chip-bg: #1d2a3c;
+      --good: #4cc79a;
+      --good-bg: #14342a;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: var(--chip-bg);
+    padding: 2px 7px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  /* Hero */
+  header { padding: 72px 0 40px; }
+  .kicker {
+    font-size: 13px; font-weight: 600; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+  }
+  h1 { font-size: clamp(32px, 5vw, 46px); line-height: 1.12; letter-spacing: -0.02em; }
+  .lede { margin-top: 18px; max-width: 640px; font-size: 18px; color: var(--ink-2); }
+  .hero-links { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: 15px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  }
+  .btn:hover { text-decoration: none; border-color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+  /* Live demo banner */
+  .demos { margin: 26px 0 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .demo-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .demo-card .tag {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--good); background: var(--good-bg);
+    padding: 3px 10px; border-radius: 99px; margin-bottom: 10px;
+  }
+  .demo-card h3 { font-size: 18px; margin-bottom: 4px; }
+  .demo-card p { font-size: 14.5px; color: var(--ink-2); }
+  .demo-card .creds { margin-top: 12px; font-size: 14px; color: var(--ink-2); }
+
+  /* Sections */
+  section { padding: 44px 0 8px; }
+  h2 { font-size: 26px; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .sub { color: var(--ink-2); max-width: 640px; margin-bottom: 28px; }
+
+  /* Project cards */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .card.wide { grid-column: 1 / -1; }
+  .shot { border-bottom: 1px solid var(--line); background: #0f172a; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .card-body { padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .card h3 { font-size: 19px; }
+  .card .role {
+    font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .card p { font-size: 15px; color: var(--ink-2); }
+  .stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+  .stack span {
+    font-size: 12.5px; font-weight: 600; color: var(--ink-2);
+    background: var(--chip-bg); border-radius: 6px; padding: 3px 9px;
+  }
+  .card-links { margin-top: auto; padding-top: 12px; display: flex; gap: 16px; font-weight: 600; font-size: 14.5px; }
+
+  /* Two-shot row inside wide cards */
+  .shots-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
+  .shots-2 > div { background: #0f172a; }
+  .shots-2 img { display: block; width: 100%; height: auto; }
+  @media (max-width: 640px) { .shots-2 { grid-template-columns: 1fr; } }
+
+  /* Highlights */
+  .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .point { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+  .point h3 { font-size: 16px; margin-bottom: 6px; }
+  .point p { font-size: 14.5px; color: var(--ink-2); }
+
+  footer {
+    margin-top: 56px; padding: 32px 0 48px; border-top: 1px solid var(--line);
+    color: var(--ink-3); font-size: 14px;
+  }
+  footer .row { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <p class="kicker">Portfolio</p>
+  <h1>Zach Hanoosh</h1>
+  <p class="lede">
+    Full-stack developer and AI-systems builder. Co-founder of Adaptive AI Services, where I own
+    the CRM, integration, and build side — production client software, AI pipelines, and the
+    deployment work that keeps them running.
+  </p>
+  <div class="hero-links">
+    <a class="btn primary" href="#demos">Try the live demos</a>
+    <a class="btn" href="https://github.com/zjhanoosh21-cell/zach-portfolio" target="_blank" rel="noopener">Code on GitHub</a>
+    <a class="btn" href="mailto:zjhanoosh21@gmail.com">zjhanoosh21@gmail.com</a>
+  </div>
+</header>
+
+<div class="wrap" id="demos">
+  <div class="demos">
+    <div class="demo-card">
+      <span class="tag">Live demo</span>
+      <h3><a href="https://zach-crm-demo.vercel.app" target="_blank" rel="noopener">Recruiting CRM →</a></h3>
+      <p>Sign in and work a recruiter's desk: AI-scored candidates, pipeline, jobs, placements.</p>
+      <p class="creds"><code>demo@example.com</code> / <code>DemoPass123!</code></p>
+    </div>
+    <div class="demo-card">
+      <span class="tag">Live demo</span>
+      <h3><a href="https://zach-draw-demo.vercel.app" target="_blank" rel="noopener">Draw Manager →</a></h3>
+      <p>Open a $685k custom-home build: vendor budget lines, draws, change orders, payments.</p>
+      <p class="creds">Password <code>demo2026</code></p>
+    </div>
+  </div>
+  <p style="margin-top:14px; font-size:13.5px; color:var(--ink-3);">
+    Both are the real client applications with all data replaced by fictional demo datasets —
+    invented people, firms, addresses, and dollar amounts.
+  </p>
+</div>
+
+<section class="wrap">
+  <h2>Client production systems</h2>
+  <p class="sub">Software small businesses run on daily — built, shipped, and maintained end-to-end.</p>
+
+  <div class="grid">
+    <div class="card wide">
+      <div class="shots-2">
+        <div><img src="assets/crm-dashboard.png" alt="Recruiting CRM dashboard with AI-prioritized candidates and pipeline snapshot" loading="lazy"></div>
+        <div><img src="assets/crm-candidates.png" alt="Recruiting CRM candidate list" loading="lazy"></div>
+      </div>
+      <div class="card-body">
+        <p class="role">For a legal-staffing recruiting firm · in production</p>
+        <h3>Recruiting CRM</h3>
+        <p>
+          Replaced spreadsheets and a legacy ATS export with one system for the firm's whole desk:
+          candidates, job orders, clients, submissions, and placement financials. New applicants
+          arrive pre-scored by an AI intake pipeline, with recruiter review queues, tiering, and a
+          full activity log. Includes the migration script that carried the firm's history over at cutover.
+        </p>
+        <div class="stack"><span>Next.js</span><span>TypeScript</span><span>Prisma</span><span>PostgreSQL</span><span>NextAuth</span><span>Docker</span><span>Tailwind</span></div>
+        <div class="card-links">
+          <a href="https://zach-crm-demo.vercel.app" target="_blank" rel="noopener">Live demo →</a>
+          <a href="https://github.com/zjhanoosh21-cell/zach-portfolio/tree/main/projects/recruiting-crm" target="_blank" rel="noopener">Code + README</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card wide">
+      <div class="shots-2">
+        <div><img src="assets/draw-project.png" alt="Draw Manager project view with vendor budget lines and change orders" loading="lazy"></div>
+        <div><img src="assets/draw-history.png" alt="Draw Manager payment history" loading="lazy"></div>
+      </div>
+      <div class="card-body">
+        <p class="role">For a custom-home builder · in production</p>
+        <h3>Draw Manager</h3>
+        <p>
+          The financial spine of a home build: line-item budgets by vendor, bank draws, change
+          orders with an approval trail, lien-waiver tracking, and bank-ready PDF paperwork.
+          All money is integer cents — no floating-point currency math anywhere.
+        </p>
+        <div class="stack"><span>Next.js</span><span>TypeScript</span><span>Prisma</span><span>PostgreSQL</span><span>jsPDF</span><span>Vercel</span></div>
+        <div class="card-links">
+          <a href="https://zach-draw-demo.vercel.app" target="_blank" rel="noopener">Live demo →</a>
+          <a href="https://github.com/zjhanoosh21-cell/zach-portfolio/tree/main/projects/draw-manager" target="_blank" rel="noopener">Code + README</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <p class="role">Feeds the CRM · in daily client use</p>
+        <h3>AI Resume Scanner</h3>
+        <p>
+          A 44-node n8n workflow that watches the firm's inbox, extracts and scores every resume
+          with an LLM, and posts structured candidates into the CRM's intake API — with retries,
+          dedup, and human-in-the-loop review on the other side.
+        </p>
+        <div class="stack"><span>n8n</span><span>OpenAI</span><span>Gmail API</span><span>REST</span></div>
+        <div class="card-links">
+          <a href="https://github.com/zjhanoosh21-cell/zach-portfolio/tree/main/projects/resume-scanner-n8n" target="_blank" rel="noopener">Workflow + README</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <p class="role">Sales tooling · live, used for real outreach</p>
+        <h3>Prospect Engine</h3>
+        <p>
+          Generates a fully branded proof-of-concept website per sales prospect — their logo,
+          sampled brand colors, trade-matched content — served instantly on a wildcard preview
+          domain from a JSON-driven site schema.
+        </p>
+        <div class="stack"><span>Next.js</span><span>Dynamic routing</span><span>Vercel</span></div>
+        <div class="card-links">
+          <a href="https://github.com/zjhanoosh21-cell/zach-portfolio/tree/main/projects/prospect-engine" target="_blank" rel="noopener">Code + README</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>AI beyond chatbots</h2>
+  <p class="sub">LLMs wired into real workflows — tools, pipelines, and agentic operations.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-body">
+        <p class="role">Personal project · feature-complete</p>
+        <h3>Sage — Personal Finance Advisor</h3>
+        <p>
+          A local-first finance app whose Claude-powered advisor doesn't just talk — it updates
+          your accounts, budget, and goals directly from conversation via streaming tool use.
+        </p>
+        <div class="stack"><span>Next.js</span><span>Anthropic SDK</span><span>Tool use</span><span>Prisma + SQLite</span><span>Recharts</span></div>
+        <div class="card-links">
+          <a href="https://github.com/zjhanoosh21-cell/zach-portfolio/tree/main/projects/sage-finance-advisor" target="_blank" rel="noopener">Code + README</a>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <p class="role">Case study · runs the agency daily</p>
+        <h3>Agency AI Operating System</h3>
+        <p>
+          A git-based "shared brain" plus three named AI teammates — a silent project manager, a
+          sales-desk manager, and a content manager — that keep a two-founder agency aligned,
+          built on Claude Code with markdown as the database.
+        </p>
+        <div class="stack"><span>Claude Code</span><span>Agent skills</span><span>Git workflows</span></div>
+        <div class="card-links">
+          <a href="https://github.com/zjhanoosh21-cell/zach-portfolio/blob/main/case-studies/ai-operating-system.md" target="_blank" rel="noopener">Read the case study</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>What this portfolio shows</h2>
+  <div class="points">
+    <div class="point">
+      <h3>Production ownership</h3>
+      <p>Live systems clients run their businesses on: Dockerized deploys, migrations, API contracts between systems, and AI pipelines with human review.</p>
+    </div>
+    <div class="point">
+      <h3>Full-stack range</h3>
+      <p>Schema design through UI polish — plus the unglamorous parts: deployment docs, entrypoint scripts, idempotent sync jobs, secrets hygiene.</p>
+    </div>
+    <div class="point">
+      <h3>Demos, not promises</h3>
+      <p>The client apps are hosted with seeded demo data and credentials printed on the sign-in page. Click around; nothing to install.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap row">
+    <span>© Zach Hanoosh. All rights reserved — code shown for portfolio review.</span>
+    <span>
+      <a href="https://github.com/zjhanoosh21-cell/zach-portfolio" target="_blank" rel="noopener">GitHub</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:zjhanoosh21@gmail.com">Email</a>
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>

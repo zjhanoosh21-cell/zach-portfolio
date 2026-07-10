@@ -9,6 +9,10 @@ Live in production for the client (deployed on Vercel).
 
 ## Try the demo
 
+**Hosted:** https://zach-draw-demo.vercel.app — sign in with password `demo2026`.
+
+Or run it locally:
+
 ```bash
 # 1. Start a Postgres (Docker shown; any Postgres works)
 docker run -d --name draw-demo-db -e POSTGRES_PASSWORD=demo -e POSTGRES_DB=draws -p 5432:5432 postgres:16

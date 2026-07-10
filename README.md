@@ -7,6 +7,15 @@ where I own the CRM, integration, and build side of the house.
 This repo collects the systems I've designed and built end-to-end: production client software,
 internal agency tooling, and personal projects.
 
+**🌐 Portfolio site:** https://zjhanoosh21-cell.github.io/zach-portfolio/
+
+**▶ Live demos — click around, nothing to install:**
+
+| App | URL | Sign in |
+|---|---|---|
+| Recruiting CRM | https://zach-crm-demo.vercel.app | `demo@example.com` / `DemoPass123!` |
+| Draw Manager | https://zach-draw-demo.vercel.app | password `demo2026` |
+
 ## Projects
 
 | Project | What it is | Stack | Status |
@@ -32,9 +41,9 @@ internal agency tooling, and personal projects.
 
 ## Try the apps
 
-The two client apps are set up to be **clicked through, not just read**: each has a
-one-command demo path (Docker Postgres → migrate → seed → run) documented in its README, a
-demo login printed right on the sign-in page, and a seeded dataset that fills every screen.
+The two client apps are **hosted as live demos** (links above) with the demo login printed
+right on each sign-in page. To run them yourself instead, each has a one-command demo path
+(Docker Postgres → migrate → seed → run) documented in its README.
 
 All demo data is fictional — invented people, firms, addresses, and dollar amounts. No real
 candidate resumes, homeowner records, prospect data, environment files, or databases are in

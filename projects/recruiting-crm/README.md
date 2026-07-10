@@ -7,6 +7,10 @@ from the companion [resume-scanner n8n workflow](../resume-scanner-n8n/).
 
 ## Try the demo
 
+**Hosted:** https://zach-crm-demo.vercel.app — sign in with `demo@example.com` / `DemoPass123!`.
+
+Or run it locally:
+
 ```bash
 # 1. Start a Postgres (Docker shown; any Postgres works)
 docker run -d --name crm-demo-db -e POSTGRES_USER=cri -e POSTGRES_PASSWORD=demo -e POSTGRES_DB=cri_crm -p 5432:5432 postgres:16
