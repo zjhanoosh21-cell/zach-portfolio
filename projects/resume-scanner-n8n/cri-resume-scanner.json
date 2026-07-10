@@ -1,0 +1,1614 @@
+{
+  "name": "CRI - Resume Scanner",
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ ($binary.resume.fileExtension || '').toLowerCase() }}",
+                    "rightValue": "pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "169a0bf3-73b7-4e07-9080-92fd7fc4e1e0"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "76761dd3-64bc-4dac-9db4-bec167fff358",
+                    "leftValue": "={{ ($binary.resume.fileExtension || '').toLowerCase() }}",
+                    "rightValue": "doc",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "doc"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2839e637-431a-4290-93c4-5cdb871275e3",
+                    "leftValue": "={{ ($binary.resume.fileExtension || '').toLowerCase() }}",
+                    "rightValue": "docx",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "docx"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        272,
+        1424
+      ],
+      "id": "b2e9bee8-dcac-4af7-ba0b-e0c2e6c1e8db",
+      "name": "File Type"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "262f6569-6254-45de-9631-3869180d1e0d",
+              "name": "resumeText",
+              "value": "={{ $json.resumeText ?? $json.data ?? $json.content ?? $json.extractedText ?? ''}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1968,
+        1264
+      ],
+      "id": "30a096cc-92a7-4db8-8374-a587d8b9936b",
+      "name": "Set Resume"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "o4-mini",
+          "mode": "list",
+          "cachedResultName": "o4-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2656,
+        1488
+      ],
+      "id": "72976cbe-63b6-4f82-99ef-9eb98026079a",
+      "name": "o4-mini",
+      "credentials": {
+        "openAiApi": {
+          "id": "wqpzrHhNEaTWGqpc",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Pull the resume text from the incoming JSON\nconst resume = String($json.resumeText ?? '');\n\n// ── Step 1: Strip characters that break JSON serialization ────────────────\n// Null bytes (\\x00) — invisible, common in PDF extraction, illegal in JSON\n// Control chars except \\n (0x0a), \\r (0x0d), \\t (0x09)\n// Lone UTF-16 surrogates (U+D800–U+DFFF) — cause JSON.stringify to throw\nconst sanitized = resume\n  .replace(/\\x00/g, '')                          // null bytes\n  .replace(/[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x7f]/g, '') // other control chars\n  .replace(/[\\uD800-\\uDFFF]/g, '');              // lone surrogates\n\n// ── Step 2: Whitespace normalization (existing logic) ─────────────────────\nconst cleaned = sanitized\n  .replace(/\\r\\n/g, '\\n')       // Windows newlines → \\n\n  .replace(/\\n{3,}/g, '\\n\\n')   // collapse 3+ blank lines to 2\n  .replace(/[ \\t]{2,}/g, ' ')   // collapse extra spaces/tabs\n  .replace(/\\n\\s+/g, '\\n')      // remove leading spaces after newlines\n  .trim();\n\n// IMPORTANT: \"Run Once for Each Item\" — return ONE item object (not array)\nreturn {\n  json: {\n    ...$json,\n    resumeText: cleaned,\n    clean_resume: cleaned\n  },\n  binary: $binary   // pass resume file through unchanged\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2192,
+        1264
+      ],
+      "id": "558db2ff-0d68-42d1-b23b-fafff00467e3",
+      "name": "Cleanup resume"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "$binary",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        1440
+      ],
+      "id": "87ccc86b-4181-4b29-806e-81855ed0c4ec",
+      "name": "SPLIT - Attachments to Items (1 file = 1 item)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1e70d82e-c26b-42b1-a155-ddac432ad002",
+              "leftValue": "={{ $binary.resume.fileExtension }}",
+              "rightValue": "pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "846cc1b9-df95-49a7-9dd7-104b43f76aa0",
+              "leftValue": "={{ $binary.resume.fileExtension }}",
+              "rightValue": "doc",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "8e10b4f4-af6d-4e8b-bb06-5c69b1dafa9e",
+              "leftValue": "={{ $binary.resume.fileExtension }}",
+              "rightValue": "docx",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        -160,
+        1440
+      ],
+      "id": "2bbd9e91-f2fa-4d81-8eea-b7f4bff2322e",
+      "name": "GATE 1 - Allowed File Types (PDF/DOC/DOCX)"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "resume",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        496,
+        1344
+      ],
+      "id": "71b3923a-0e99-4a24-b0ba-c51f1e265f64",
+      "name": "EXTRACT - Text from PDF"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a document classifier for a recruiting workflow. All documents are attachments from ZipRecruiter job applications.\n\nTask:\nClassify the document content as one of:\n- resume\n- cover_letter\n- transcript\n- certification\n- portfolio\n- job_description\n- other\n\nRules:\n- Return ONLY valid JSON with no extra text.\n- A document is a resume if it contains a person's name, contact information, work history, or skills — even if the formatting is unusual or unconventional.\n- Only classify as \"other\" if the document clearly contains NO personal employment, education, or skills information whatsoever.\n- When in doubt, classify as \"resume\".\n\nReturn JSON with exactly these keys:\n{\n  \"doc_type\": \"resume|cover_letter|transcript|certification|portfolio|job_description|other\",\n  \"is_resume\": true/false,\n  \"confidence\": 0.00-1.00,\n  \"reason\": \"one sentence\"\n}\n\nDocument text:\n{{ $json.resumeText }}\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1168,
+        1568
+      ],
+      "id": "583c4dd1-cc1f-4e1a-972a-78dc9d8d44c8",
+      "name": "GATE 2 - AI Classify Document Type"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a0ef8bc2-d4db-4c49-9389-d388d60e25be",
+              "leftValue": "={{$json.output.is_resume}}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1744,
+        1360
+      ],
+      "id": "cc9e8f19-ae60-4d42-bfd2-5d96448b4969",
+      "name": "GATE 2B - Resume Only (type + confidence)"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "==Applied Role: {{ $json.applied_role || 'Not specified' }}\n\nCandidate Resume:\n{{ $json.clean_resume }}\n\nTask:\nEvaluate this candidate using the CRI Legal Staffing Evaluation Framework. For each factor, mentally note 1–2 specific facts from the resume that justify the score before assigning it. Then verify your math. Output ONLY valid JSON matching the schema. No text outside the JSON.\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a senior recruiter at Corporate Recruiters Inc. (CRI), a legal staffing agency that places candidates into law firm and corporate legal environments. CRI serves a mix of firm types — boutique, mid-size, and larger practices across Litigation, Corporate, Personal Injury, Insurance Defense, Family Law, and more. Most CRI placements are Direct Hire or Contract-to-Hire.\n\nCRI's primary roles: Legal Secretary, Legal Assistant, Paralegal, Billing Clerk, Billing Coordinator. CRI occasionally recruits for other professional roles as well — evaluate those fairly but flag them.\n\nYour job: triage each resume fast, score it accurately using CRI's framework, and give the recruiter a clear action. Be blunt and evidence-based. No fluff.\n\n══════════════════════════════════════\nCRI LEGAL STAFFING EVALUATION FRAMEWORK\n══════════════════════════════════════\n\nSTEP 1 — IDENTIFY ROLE TYPE\nAssign one of:\n  legal_secretary | legal_assistant | paralegal | billing_clerk | billing_coordinator | other_legal | other_professional | non_legal\n\nSTEP 2 — SCORE FIVE CORE FACTORS (1–5 each)\n\nFactor 1: LAW FIRM EXPERIENCE (Weight: 30%)\nAlways distinguish law firm experience from corporate legal departments — law firm scores higher.\n  5 = 7+ years inside a law firm\n  4 = 4–6 years inside a law firm\n  3 = 2–3 years inside a law firm\n  2 = 1 year in a law firm OR strong corporate legal dept experience\n  1 = No law firm experience; general office or unrelated background\n\nFactor 2: LONGEVITY / JOB STABILITY (Weight: 20%)\nCalculate average tenure: sum all months of employment ÷ number of distinct roles.\nDo not count overlapping concurrent roles as separate. Contract/temp stints under 3 months each can be grouped as one entry. Ignore gap months between roles.\n  5 = 3+ years average tenure per role\n  4 = 2–3 years average tenure per role\n  3 = 1–2 years average tenure per role\n  2 = Under 12 months average tenure per role\n  1 = Chronic job hopping (under 6 months average) or multiple unexplained gaps >12 months\n\nFactor 3: TITLE-SPECIFIC EXPERIENCE (Weight: 25%)\nDid they actually do the work the title implies — or just hold it?\n  5 = Direct, full-function role experience 5+ years\n  4 = Strong direct experience 3–4 years\n  3 = Moderate direct exposure 1–2 years\n  2 = Related but not direct (e.g., called \"Legal Assistant\" but only did reception)\n  1 = No meaningful direct experience in the identified role\n\nFactor 4: TECHNICAL & ROLE SKILL ALIGNMENT (Weight: 15%)\nCan they function immediately without significant training?\n  Legal Secretary: MS Word/Outlook, e-filing (PACER, Odyssey), court deadlines, dictation, legal document formatting, time entry\n  Legal Assistant: Clio, iManage, NetDocs, discovery coordination, drafting, filing pleadings, client intake, trial prep\n  Paralegal: Westlaw/LexisNexis, drafting pleadings & motions, discovery, trial prep, billable hours (significant plus), ABA cert (bonus)\n  Billing Clerk: LEDES, Aderant/Elite/SurePoint, time entry, invoice generation, pre-bill edits\n  Billing Coordinator: Legal Tracker/Serengeti, full billing cycle, attorney billing communication, appeals & adjustments, revenue reporting, trust accounting (bonus)\n  For non_legal / other_professional: evaluate skill alignment against the applied role stated in the user message.\n  5 = Highly aligned — multiple role-specific tools/skills confirmed in resume\n  4 = Well-aligned — core role tools/skills present, only minor gaps\n  3 = Partially aligned — some relevant skills present but significant gaps\n  2 = Minimally aligned — only generic tools (MS Office) with loose relevance\n  1 = Minimal alignment — little to no relevant skills listed\n\nFactor 5: PROFESSIONALISM & COMMUNICATION (Weight: 10%)\nAssessed from the resume itself — clarity, structure, consistency, errors.\n  5 = Polished, professional, well-structured, error-free, achievements quantified\n  4 = Good — clean presentation, professional tone, mostly specific content\n  3 = Adequate — functional but unremarkable, mostly generic descriptions\n  2 = Below average — inconsistent formatting, some errors or vague descriptions\n  1 = Poor — errors, inconsistencies, hard to follow, or unprofessional content\n\nSTEP 3 — CALCULATE COMPOSITE SCORE (0–100)\ncomposite_score = (F1 × 6) + (F2 × 4) + (F3 × 5) + (F4 × 3) + (F5 × 2)\nMaximum is 100. Verify your math before outputting.\n\nSTEP 4 — ASSIGN TIER\n  Tier 1 – Premium      (85–100): Strong law firm tenure, direct expertise, minimal training → Direct Hire, upper-tier firms\n  Tier 2 – Strong       (70–84): Solid background, stable history, some training needed → Contract-to-Hire, mid-size firms\n  Tier 3 – Transitional (55–69): Limited law firm exp but transferable skills present → smaller firms, junior roles\n  Tier 4 – High Risk    (0–54):  No law firm exp, job hopping, or weak alignment → do not submit\n\nSTEP 5 — ASSIGN TRIAGE ACTION\n  Tier 1 → \"Advance – Priority Call\"\n  Tier 2 → \"Advance – Schedule Review\"\n  Tier 3 → \"Hold – Recruiter Judgment\"\n  Tier 4 → \"Pass – Do Not Submit\"\n\n══════════════════════════════════════\nRULES\n══════════════════════════════════════\n- Score only on evidence visible in the resume. Never inflate or assume.\n- For non_legal / other_professional roles: use the applied role from the user message as the reference for Factor 3 and Factor 4 scoring.\n- Default ambiguous cases to Tier 3, not Tier 4. Only assign Tier 4 when fit is clearly absent.\n- MATH CHECK: Before outputting, verify: (law_firm×6)+(longevity×4)+(title×5)+(tech×3)+(professionalism×2) = composite_score. Fix any mismatch before outputting.\n- Return ONLY valid JSON matching the output parser schema exactly. No text outside the JSON."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        1264
+      ],
+      "id": "92c63185-0577-4d2f-9970-c834569671a2",
+      "name": "ANALYZE - CRI Resume Scan (Structured)"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"composite_score\": {\n      \"type\": \"integer\",\n      \"minimum\": 0,\n      \"maximum\": 100,\n      \"description\": \"Weighted composite score 0–100. Formula: (law_firm_experience×6) + (longevity_stability×4) + (title_specific_experience×5) + (technical_skill_alignment×3) + (professionalism_communication×2).\"\n    },\n    \"candidate_tier\": {\n      \"type\": \"string\",\n      \"enum\": [\"Tier 1 – Premium\", \"Tier 2 – Strong\", \"Tier 3 – Transitional\", \"Tier 4 – High Risk\"]\n    },\n    \"triage_action\": {\n      \"type\": \"string\",\n      \"enum\": [\"Advance – Priority Call\", \"Advance – Schedule Review\", \"Hold – Recruiter Judgment\", \"Pass – Do Not Submit\"]\n    },\n    \"detected_role_type\": {\n      \"type\": \"string\",\n      \"enum\": [\"legal_secretary\", \"legal_assistant\", \"paralegal\", \"billing_clerk\", \"billing_coordinator\", \"other_legal\", \"other_professional\", \"non_legal\"]\n    },\n    \"factor_scores\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"properties\": {\n        \"law_firm_experience\":        { \"type\": \"integer\", \"minimum\": 1, \"maximum\": 5 },\n        \"longevity_stability\":        { \"type\": \"integer\", \"minimum\": 1, \"maximum\": 5 },\n        \"title_specific_experience\":  { \"type\": \"integer\", \"minimum\": 1, \"maximum\": 5 },\n        \"technical_skill_alignment\":  { \"type\": \"integer\", \"minimum\": 1, \"maximum\": 5 },\n        \"professionalism_communication\": { \"type\": \"integer\", \"minimum\": 1, \"maximum\": 5 }\n      },\n      \"required\": [\"law_firm_experience\", \"longevity_stability\", \"title_specific_experience\", \"technical_skill_alignment\", \"professionalism_communication\"]\n    },\n    \"practice_areas\":       { \"type\": \"array\",  \"items\": { \"type\": \"string\" } },\n    \"key_skills_detected\":  { \"type\": \"array\",  \"items\": { \"type\": \"string\" } },\n    \"top_strengths\":        { \"type\": \"array\",  \"items\": { \"type\": \"string\" } },\n    \"top_concerns\":         { \"type\": \"array\",  \"items\": { \"type\": \"string\" } },\n    \"one_line_summary\":     { \"type\": \"string\" },\n    \"risk_flags\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\",\n        \"enum\": [\"job_hopping\", \"no_law_firm_experience\", \"corporate_only_no_law_firm\", \"no_legal_exposure\", \"title_inflation\", \"gaps\", \"poor_resume_quality\", \"unclear_dates\", \"overqualified\", \"compensation_risk\", \"visa_or_work_auth_unknown\", \"industry_mismatch\", \"billable_hours_unknown\"]\n      }\n    }\n  },\n  \"required\": [\"composite_score\", \"candidate_tier\", \"triage_action\", \"detected_role_type\", \"factor_scores\", \"practice_areas\", \"key_skills_detected\", \"top_strengths\", \"top_concerns\", \"one_line_summary\", \"risk_flags\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2784,
+        1488
+      ],
+      "id": "e51102b8-a10a-435d-a019-1546befd77d8",
+      "name": "FORMAT - Parse to Clean JSON"
+    },
+    {
+      "parameters": {
+        "sendTo": "zachary@corporaterecruitersinc.com",
+        "subject": "={{$('Code in JavaScript').item.json.subjectCandidateName || $json.candidate_display_name || ($binary.resume?.fileName ? $binary.resume.fileName.replace(/\\.(pdf|docx?|doc)$/i,'') : 'Unknown Candidate')}} | {{$json.output.composite_score}}/100 | {{$json.output.candidate_tier}} | {{$json.output.triage_action}}",
+        "message": "=<div style=\"font-family:Arial,Helvetica,sans-serif;background:#eef1f7;padding:20px 12px;\">\n<table width=\"1260\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" style=\"max-width:1260px;width:100%;border:1px solid #d0d9e8;border-collapse:collapse;\">\n\n  <!-- Tier Color Band -->\n  <tr>\n    <td colspan=\"2\" height=\"5\" style=\"background:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};font-size:0;line-height:0;\">&nbsp;</td>\n  </tr>\n\n  <!-- CRI Header -->\n  <tr>\n    <td colspan=\"2\" style=\"background:#2d6db4;padding:12px 24px;\">\n      <span style=\"font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75);\">CRI Resume Triage &mdash; Internal Use Only</span>\n    </td>\n  </tr>\n\n  <!-- Score + Summary Row -->\n  <tr>\n    <td style=\"width:50%;background:#ffffff;padding:20px 16px 18px 24px;vertical-align:middle;border-bottom:1px solid #e2e8f4;\">\n      <div>\n        <span style=\"font-size:54px;font-weight:900;line-height:1;color:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};\">{{ $json.output.composite_score }}</span><span style=\"font-size:18px;color:#8c9196;font-weight:300;\"> /100</span>\n      </div>\n      <div style=\"margin:8px 0 12px;\">\n        <span style=\"display:inline-block;padding:4px 13px;border-radius:20px;font-size:12px;font-weight:700;color:#fff;background:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};margin-right:6px;\">{{ $json.output.candidate_tier }}</span>\n        <span style=\"display:inline-block;padding:4px 13px;border-radius:20px;font-size:12px;font-weight:700;color:#2d6db4;border:1.5px solid #2d6db4;\">{{ $json.output.triage_action }}</span>\n      </div>\n      <div style=\"font-size:12px;color:#2d3748;line-height:1.8;\">\n        <span style=\"color:#8c9196;font-weight:600;\">Applied For:</span> {{ $json.applied_role || 'Not specified' }}<br>\n        <span style=\"color:#8c9196;font-weight:600;\">Evaluated As:</span> {{ ($json.output.detected_role_type || '').replace(/_/g,' ') }}\n      </div>\n    </td>\n    <td style=\"width:50%;background:#f4f7fc;padding:20px 24px 18px 20px;vertical-align:middle;border-bottom:1px solid #e2e8f4;\">\n      <div style=\"font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2d6db4;margin-bottom:8px;\">Summary</div>\n      <p style=\"font-size:13px;font-style:italic;color:#2d3748;line-height:1.65;margin:0;\">{{ $json.output.one_line_summary }}</p>\n    </td>\n  </tr>\n\n  <!-- 2-Column Body -->\n  <tr>\n\n    <!-- LEFT: Factor Breakdown -->\n    <td valign=\"top\" style=\"background:#ffffff;padding:20px 16px 24px 24px;border-right:1px solid #e2e8f4;\">\n      <div style=\"font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2d6db4;margin-bottom:14px;\">Factor Breakdown</div>\n\n      <!-- Law Firm Experience -->\n      <div style=\"margin-bottom:13px;\">\n        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr>\n          <td style=\"font-size:12px;color:#2d3748;padding-bottom:4px;\">Law Firm Experience</td>\n          <td align=\"right\" style=\"font-size:12px;font-weight:700;color:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};padding-bottom:4px;\">{{ $json.output.factor_scores.law_firm_experience }}/5</td>\n        </tr></table>\n        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"height:7px;\"><tr>\n          <td width=\"{{ $json.output.factor_scores.law_firm_experience * 20 }}%\" style=\"background:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};height:7px;\"></td>\n          <td style=\"background:#d0ddf0;height:7px;\"></td>\n        </tr></table>\n      </div>\n\n      <!-- Longevity / Stability -->\n      <div style=\"margin-bottom:13px;\">\n        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr>\n          <td style=\"font-size:12px;color:#2d3748;padding-bottom:4px;\">Longevity / Stability</td>\n          <td align=\"right\" style=\"font-size:12px;font-weight:700;color:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};padding-bottom:4px;\">{{ $json.output.factor_scores.longevity_stability }}/5</td>\n        </tr></table>\n        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"height:7px;\"><tr>\n          <td width=\"{{ $json.output.factor_scores.longevity_stability * 20 }}%\" style=\"background:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};height:7px;\"></td>\n          <td style=\"background:#d0ddf0;height:7px;\"></td>\n        </tr></table>\n      </div>\n\n      <!-- Title-Specific Experience -->\n      <div style=\"margin-bottom:13px;\">\n        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr>\n          <td style=\"font-size:12px;color:#2d3748;padding-bottom:4px;\">Title-Specific Experience</td>\n          <td align=\"right\" style=\"font-size:12px;font-weight:700;color:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};padding-bottom:4px;\">{{ $json.output.factor_scores.title_specific_experience }}/5</td>\n        </tr></table>\n        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"height:7px;\"><tr>\n          <td width=\"{{ $json.output.factor_scores.title_specific_experience * 20 }}%\" style=\"background:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};height:7px;\"></td>\n          <td style=\"background:#d0ddf0;height:7px;\"></td>\n        </tr></table>\n      </div>\n\n      <!-- Technical Skill Alignment -->\n      <div style=\"margin-bottom:13px;\">\n        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr>\n          <td style=\"font-size:12px;color:#2d3748;padding-bottom:4px;\">Technical Skill Alignment</td>\n          <td align=\"right\" style=\"font-size:12px;font-weight:700;color:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};padding-bottom:4px;\">{{ $json.output.factor_scores.technical_skill_alignment }}/5</td>\n        </tr></table>\n        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"height:7px;\"><tr>\n          <td width=\"{{ $json.output.factor_scores.technical_skill_alignment * 20 }}%\" style=\"background:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};height:7px;\"></td>\n          <td style=\"background:#d0ddf0;height:7px;\"></td>\n        </tr></table>\n      </div>\n\n      <!-- Professionalism -->\n      <div>\n        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr>\n          <td style=\"font-size:12px;color:#2d3748;padding-bottom:4px;\">Professionalism</td>\n          <td align=\"right\" style=\"font-size:12px;font-weight:700;color:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};padding-bottom:4px;\">{{ $json.output.factor_scores.professionalism_communication }}/5</td>\n        </tr></table>\n        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"height:7px;\"><tr>\n          <td width=\"{{ $json.output.factor_scores.professionalism_communication * 20 }}%\" style=\"background:{{ {'Tier 1 – Premium':'#2e7d32','Tier 2 – Strong':'#1565c0','Tier 3 – Transitional':'#e65100','Tier 4 – High Risk':'#b71c1c'}[$json.output.candidate_tier]||'#616161' }};height:7px;\"></td>\n          <td style=\"background:#d0ddf0;height:7px;\"></td>\n        </tr></table>\n      </div>\n    </td>\n\n    <!-- RIGHT: Text Sections -->\n    <td valign=\"top\" style=\"background:#f4f7fc;padding:20px 24px 24px 20px;\">\n\n      <!-- Practice Areas -->\n      <div style=\"margin-bottom:16px;\">\n        <div style=\"font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2d6db4;margin-bottom:6px;\">Practice Areas</div>\n        <div style=\"font-size:12px;color:#2d3748;line-height:1.6;\">{{ ($json.output.practice_areas && $json.output.practice_areas.length > 0) ? $json.output.practice_areas.join(' · ') : 'None detected' }}</div>\n      </div>\n\n      <!-- Key Skills -->\n      <div style=\"margin-bottom:16px;\">\n        <div style=\"font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2d6db4;margin-bottom:6px;\">Key Skills</div>\n        <div style=\"font-size:12px;color:#2d3748;line-height:1.6;\">{{ ($json.output.key_skills_detected || []).join(' · ') }}</div>\n      </div>\n\n      <!-- Strengths -->\n      <div style=\"margin-bottom:16px;\">\n        <div style=\"font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2d6db4;margin-bottom:6px;\">Strengths</div>\n        {{ $json.output.top_strengths.map(s => `<div style=\"font-size:12px;color:#2d3748;padding:3px 0 3px 10px;border-left:2px solid #2e7d32;margin-bottom:5px;\">${s}</div>`).join('') }}\n      </div>\n\n      <!-- Concerns -->\n      <div style=\"margin-bottom:16px;\">\n        <div style=\"font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2d6db4;margin-bottom:6px;\">Concerns</div>\n        {{ $json.output.top_concerns.map(c => `<div style=\"font-size:12px;color:#2d3748;padding:3px 0 3px 10px;border-left:2px solid #e65100;margin-bottom:5px;\">${c}</div>`).join('') }}\n      </div>\n\n      <!-- Risk Flags -->\n      {{ ($json.output.risk_flags && $json.output.risk_flags.length > 0) ? `<div><div style=\"font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2d6db4;margin-bottom:6px;\">Risk Flags</div><div>${$json.output.risk_flags.map(f => `<span style=\"display:inline-block;background:#ffebee;color:#b71c1c;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;margin:2px 4px 2px 0;\">${f.replace(/_/g,' ').replace(/\\b\\w/g,c=>c.toUpperCase())}</span>`).join('')}</div></div>` : '' }}\n\n    </td>\n  </tr>\n\n  <!-- Footer -->\n  <tr>\n    <td colspan=\"2\" style=\"background:#2d6db4;padding:10px 24px;text-align:center;\">\n      <span style=\"font-size:10px;color:rgba(255,255,255,0.6);\">Corporate Recruiters Inc. &mdash; Confidential &mdash; Internal Use Only</span>\n    </td>\n  </tr>\n\n</table>\n</div>",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "resume"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3216,
+        1344
+      ],
+      "id": "f1d0592f-5085-4838-80d0-dfb6d1e0133c",
+      "name": "SEND - Email Me Results + Attach Resume",
+      "webhookId": "a7479b55-7e8b-497c-aa05-c714405bea3b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gihkGbVbtcbeTvgq",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const out = [];\nfor (const item of items) {\n  const subjectRaw = (item.json.subject || '').replace(/^(?:FW|RE|FWD):\\s*/i, '').trim();\n  const zipMatch = subjectRaw.match(/New Candidate:\\s*.+?\\s+for\\s+[\\u2018\\u2019\\u201C\\u201D'\"]?(.+?)[\\u2018\\u2019\\u201C\\u201D'\"]?\\s*$/i);\n  const applied_role = zipMatch ? zipMatch[1].trim() : '';\n  const nameMatch = subjectRaw.match(/^New Candidate:\\s+(.+?)\\s+for\\s+[\\u2018\\u2019\\u201C\\u201D'\"]/i);\n  const subjectCandidateName = nameMatch ? nameMatch[1].trim() : '';\n  const bin = item.binary || {};\n  const keys = Object.keys(bin);\n  for (const key of keys) {\n    let resumeBinaryBase64 = null;\nconst rawData = (bin[key].data || '');\n\nif (rawData.length > 512 && !rawData.startsWith('filesystem')) {\n  // N8N_BINARY_DATA_MODE=default: bin[key].data IS the real base64\n  resumeBinaryBase64 = rawData;\n} else {\n  // Filesystem reference — try getBinaryDataBuffer to resolve it\n  try {\n    const binaryBuffer = await $helpers.getBinaryDataBuffer(item, key);\n    const bufStr = binaryBuffer.toString('base64');\n    resumeBinaryBase64 = bufStr.length > 512 ? bufStr : null;\n  } catch (e) {\n    console.error('[CJS-binary] getBinaryDataBuffer threw:', e.message);\n    console.error('[CJS-binary] bin[key].data preview:', rawData.substring(0, 120));\n    resumeBinaryBase64 = null;\n  }\n}\n\n    out.push({\n      json: {\n        ...item.json,\n        applied_role,\n        subjectCandidateName,\n        originalAttachmentKey: key,\n        resumeFileName: bin[key].fileName,\n        resumeExtension: (bin[key].fileExtension || '').toLowerCase(),\n        resumeMimeType: bin[key].mimeType,\n        resumeBinaryBase64,\n        resumeBinaryMimeType: bin[key].mimeType,\n        resumeBinaryFileName: bin[key].fileName,\n        emailMsgId: item.json.id,\n        emailThreadId: item.json.threadId,\n      },\n      binary: { resume: bin[key] },\n    });\n  }\n}\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        1440
+      ],
+      "id": "71de4e1c-386a-48bb-98c7-5496c58847e3",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3455df25-3552-4adf-bda9-10f2876778c7",
+              "name": "resumeText",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "7ea56769-602a-4bd8-b2b8-4fa202d8e4f1",
+              "name": "applied_role",
+              "value": "={{ $('Code in JavaScript').item.json.applied_role }}",
+              "type": "string"
+            },
+            {
+              "id": "aed02af7-5444-446f-9169-5125b96be8a0",
+              "name": "emailMsgId",
+              "value": "={{ $('Code in JavaScript').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "86ec1ac5-2ba8-4160-acea-3d9b10889607",
+              "name": "emailThreadId",
+              "value": "={{ $('Code in JavaScript').item.json.threadId }}",
+              "type": "string"
+            },
+            {
+              "id": "f00bb87b-5a7b-48ce-9997-bfcbd16f0a71",
+              "name": "subjectCandidateName",
+              "value": "={{ $('Code in JavaScript').item.json.subjectCandidateName }}",
+              "type": "string"
+            },
+            {
+              "id": "b30ee3da-ba4c-433c-8539-45f2e6ecb462",
+              "name": "resumeBinaryBase64",
+              "value": "={{ $('Extract from File1').item.json.resumeBinaryBase64 }}",
+              "type": "string"
+            },
+            {
+              "id": "0b949ae6-695d-40ac-aca1-ec3e8cb61236",
+              "name": "resumeBinaryMimeType",
+              "value": "={{ $('Code in JavaScript').item.json.resumeBinaryMimeType }}",
+              "type": "string"
+            },
+            {
+              "id": "e43e3e58-8aa5-4fdf-9a62-def2f6896e8f",
+              "name": "resumeBinaryFileName",
+              "value": "={{ $('Code in JavaScript').item.json.resumeBinaryFileName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        1344
+      ],
+      "id": "24abb150-9fe8-4e9a-864b-b536a5a7d5b2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "740f247a-5eb2-457e-84ee-8502e8386c60",
+              "name": "resumeText",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "4a793b81-a706-44ba-a537-0e9116f1c9d6",
+              "name": "applied_role",
+              "value": "={{ $('Code in JavaScript').item.json.applied_role }}",
+              "type": "string"
+            },
+            {
+              "id": "8e07c5c5-7c44-43a8-a8f5-a7f736a442e0",
+              "name": "emailMsgId",
+              "value": "={{ $('Code in JavaScript').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "a154d3ce-3831-4134-8bce-7a3de5da23ef",
+              "name": "emailThreadId",
+              "value": "={{ $('Code in JavaScript').item.json.threadId }}",
+              "type": "string"
+            },
+            {
+              "id": "05b03d73-95a4-495f-96d4-793e5ea9bf4c",
+              "name": "subjectCandidateName",
+              "value": "={{ $('Code in JavaScript').item.json.subjectCandidateName }}",
+              "type": "string"
+            },
+            {
+              "id": "30d0d2f7-6247-4349-83b1-fc2af8bd6d24",
+              "name": "resumeBinaryBase64",
+              "value": "={{ $('Extract from File1').item.json.resumeBinaryBase64 }}\n",
+              "type": "string"
+            },
+            {
+              "id": "7dd03b10-ff8c-4879-b8b4-46eaca77a1bb",
+              "name": "resumeBinaryMimeType",
+              "value": "={{ $('Code in JavaScript').item.json.resumeBinaryMimeType }}",
+              "type": "string"
+            },
+            {
+              "id": "069dd6e0-5939-4ebd-b9d1-658d1289e043",
+              "name": "resumeBinaryFileName",
+              "value": "={{ $('Code in JavaScript').item.json.resumeBinaryFileName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        1536
+      ],
+      "id": "88ca150d-50e6-4e63-9ef2-d72c8d350cf2",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1184,
+        1792
+      ],
+      "id": "06690233-3d56-4e43-8b19-e2249790ba2f",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "wqpzrHhNEaTWGqpc",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"doc_type\": \"resume\",\n  \"is_resume\": true,\n  \"confidence\": 0.92,\n  \"reason\": \"Contains structured work history, education, and skills typical of a resume.\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1312,
+        1792
+      ],
+      "id": "efbda2c4-c190-46c2-90ae-abfba5c27939",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1520,
+        1440
+      ],
+      "id": "61f165f8-8b2a-4840-a531-175bee0bd465",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b0048ccb-4c59-41c5-b077-ce5f37491e06",
+              "name": "resumeText",
+              "value": "={{ $json.resumeText }}",
+              "type": "string"
+            },
+            {
+              "id": "3340c043-1d55-43eb-adec-a3382a982dca",
+              "name": "applied_role",
+              "value": "={{ $json.applied_role }}",
+              "type": "string"
+            },
+            {
+              "id": "f18c99dc-a855-459c-b311-fc71d86dfebc",
+              "name": "subjectCandidateName",
+              "value": "={{ $('Code in JavaScript').item.json.subjectCandidateName }}",
+              "type": "string"
+            },
+            {
+              "id": "5680c691-656b-4378-87d7-4b496e22c143",
+              "name": "resumeBinaryBase64",
+              "value": "={{ $json.resumeBinaryBase64 }}",
+              "type": "string"
+            },
+            {
+              "id": "0d490b98-b97c-41b9-806b-9bede6f99347",
+              "name": "resumeBase64Extracted",
+              "value": "={{ $json.resumeBase64Extracted }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "selected",
+        "includeFields": "resume",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        944,
+        1440
+      ],
+      "id": "bc4912fc-e8b5-4c0c-a21b-b16babfb7bcd",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2992,
+        1440
+      ],
+      "id": "1e3606b2-b2ce-479c-b234-fd081527e04c",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1504,
+        1440
+      ],
+      "id": "e2317dc8-3f70-4104-9b4e-0b953776fee7",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        1440
+      ],
+      "id": "1eb0c73f-bbeb-47be-9198-fdb74de8ed71",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 736,
+        "width": 7856,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1600,
+        1200
+      ],
+      "typeVersion": 1,
+      "id": "e23b86fe-0285-437a-afd2-7deda2fab08a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Input: resume text is in $json.clean_resume\nconst text = ($json.clean_resume || '').replace(/\\r/g, '\\n');\n\n// Only look at the top of the resume (where names are)\nconst top = text.split('\\n').slice(0, 12).map(l => l.trim()).filter(Boolean);\n\n// Common junk to ignore\nconst badLinePatterns = [\n  /@/i,                         // email\n  /\\b(phone|mobile|cell)\\b/i,\n  /\\b(linkedin|github|portfolio|website)\\b/i,\n  /\\b(address|street|ave|st\\.|road|rd\\.|blvd|suite|ste)\\b/i,\n  /\\b(summary|experience|education|skills)\\b/i,\n  /\\bobjective\\b/i,\n  /\\bwww\\./i,\n  /\\d{3}[-.\\s]?\\d{3}[-.\\s]?\\d{4}/, // phone formats\n];\n\n// Helper: title-case-ish without being cute\nfunction normalizeName(s) {\n  s = s.replace(/\\s+/g, ' ').trim();\n  // Keep initials/suffixes\n  return s;\n}\n\n// A \"name-like\" line: mostly letters/spaces, 2–4 words, not too long\nfunction looksLikeName(line) {\n  if (line.length < 4 || line.length > 45) return false;\n  if (badLinePatterns.some(rx => rx.test(line))) return false;\n\n  // Remove punctuation that sometimes appears\n  const cleaned = line.replace(/[.,|•]/g, ' ').replace(/\\s+/g, ' ').trim();\n\n  // Must be mostly letters/spaces/hyphen/apostrophe\n  if (!/^[A-Za-zÀ-ÿ'’\\- ]+$/.test(cleaned)) return false;\n\n  const parts = cleaned.split(' ').filter(Boolean);\n\n  // Typically 2-4 tokens (First Last, First M Last, First Last Jr)\n  if (parts.length < 2 || parts.length > 5) return false;\n\n  // Avoid all-caps section headers that slipped through\n  const letters = cleaned.replace(/[^A-Za-z]/g, '');\n  const upper = letters.replace(/[^A-Z]/g, '').length;\n  const upperRatio = letters.length ? upper / letters.length : 0;\n\n  // All-caps names exist; allow them but require it to be very name-like by token count\n  // We'll not reject purely on caps.\n\n  return true;\n}\n\nlet candidateLine = null;\n\n// First pass: pick the first line that looks like a name\nfor (const line of top) {\n  // Sometimes the first line includes extra separators\n  const simplified = line.replace(/[\\t|•]+/g, ' ').replace(/\\s+/g, ' ').trim();\n  if (looksLikeName(simplified)) {\n    candidateLine = simplified;\n    break;\n  }\n}\n\n// Fallback: sometimes name and title are on same line: \"Jane Doe — Paralegal\"\nif (!candidateLine) {\n  for (const line of top) {\n    const simplified = line.replace(/—|–|-/g, '|');\n    const parts = simplified.split('|').map(x => x.trim()).filter(Boolean);\n    if (parts.length >= 2 && looksLikeName(parts[0])) {\n      candidateLine = parts[0];\n      break;\n    }\n  }\n}\n\nlet first = '';\nlet last = '';\nlet confidence = 'Unknown';\nlet source = 'unknown';\n\nif (candidateLine) {\n  source = 'resume_header';\n  const cleaned = candidateLine.replace(/[.,]/g, '').replace(/\\s+/g, ' ').trim();\n  const tokens = cleaned.split(' ').filter(Boolean);\n\n  // Handle suffixes\n  const suffixes = new Set(['JR', 'SR', 'II', 'III', 'IV']);\n  let t = tokens.map(x => x.replace(/[^A-Za-zÀ-ÿ'’\\-]/g, '')).filter(Boolean);\n\n  // If last token is suffix, drop it for name split\n  const lastTokUpper = (t[t.length - 1] || '').toUpperCase();\n  if (suffixes.has(lastTokUpper)) t = t.slice(0, -1);\n\n  // Simple split: first token = first name, last token = last name\n  if (t.length >= 2) {\n    first = t[0];\n    last = t[t.length - 1];\n\n    // Confidence: high if found in first 3 lines and looks clean\n    const lineIndex = top.findIndex(l => l.includes(candidateLine));\n    confidence = (lineIndex >= 0 && lineIndex <= 2) ? 'High' : 'Moderate';\n  }\n}\n\n// Write results onto item\nreturn {\n  ...$json,\n  candidate_first_name: normalizeName(first),\n  candidate_last_name: normalizeName(last),\n  candidate_display_name: (last && first) ? `${last}, ${first}` : '',\n  name_confidence: confidence,\n  name_source: source\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2416,
+        1264
+      ],
+      "id": "7d07a7ef-6648-4a51-92af-f663f62f9db2",
+      "name": "Get name"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{$json.id}}",
+        "simple": false,
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -832,
+        1440
+      ],
+      "id": "e3be43c4-56f1-4473-95ff-32bf302bfea0",
+      "name": "Get attachments ",
+      "webhookId": "93831763-09e7-4414-a337-1c7a41091af4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gihkGbVbtcbeTvgq",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {
+          "q": "in:inbox is:unread has:attachment -label:\"CRI Agent\" newer_than:15d subject:\"New Candidate:\""
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1280,
+        1440
+      ],
+      "id": "c489d6fc-2ac0-4073-8981-9642148ec250",
+      "name": "Get many messages1",
+      "webhookId": "f7c31654-5bbb-4320-bc93-057c9c28e045",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gihkGbVbtcbeTvgq",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "resume",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        496,
+        1536
+      ],
+      "id": "a1dfcebb-4481-4565-8599-de634ad6a61d",
+      "name": "EXTRACT – Text from DOC/DOCX1"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const cjItems = $('Code in JavaScript').all();\nconst cjData  = (cjItems[$itemIndex] || cjItems[0]).json;\n\nconst mergeItems = $('Merge5').all();\nconst mergeData  = (mergeItems[$itemIndex] || mergeItems[0]).json;\n\nconst sendItems = $('SEND - Email Me Results + Attach Resume').all();\nconst sendData  = (sendItems[$itemIndex] || sendItems[0]).json;\n\nconst appliedRole   = mergeData.applied_role || cjData.applied_role || 'Unknown Role';\nconst messageId     = cjData.id || null;\nconst sentThreadId  = sendData.threadId || null;\nconst emailThreadId = cjData.emailThreadId || cjData.threadId || null;  // ← NEW\n\nconst normalized = appliedRole.replace(/[<>\"\\\\|?*\\x00-\\x1f]/g, '').trim().substring(0, 180);\nconst labelName  = `CRI Agent/${normalized}`;\n\nreturn { json: { messageId, sentThreadId, emailThreadId, labelName } };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4464,
+        1536
+      ],
+      "id": "f3837de6-6a45-4ca6-adc0-12698f938838",
+      "name": "Prep Data"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://gmail.googleapis.com/gmail/v1/users/me/labels",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "gmailOAuth2",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"{{ $json.labelName }}\",\n  \"labelListVisibility\": \"labelShow\",\n  \"messageListVisibility\": \"show\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4688,
+        1536
+      ],
+      "id": "17011c93-b5f6-4506-aa99-cb23ec4a716a",
+      "name": "Create (if new)",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gihkGbVbtcbeTvgq",
+          "name": "Gmail account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://gmail.googleapis.com/gmail/v1/users/me/labels",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "gmailOAuth2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4912,
+        1536
+      ],
+      "id": "c89fa707-9798-4a8d-91f8-45f3461ca344",
+      "name": "Get All",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gihkGbVbtcbeTvgq",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const labels        = $json.labels || [];\nconst labelName     = $('Prep Data').item.json.labelName;\nconst messageId     = $('Prep Data').item.json.messageId;\nconst sentThreadId  = $('Prep Data').item.json.sentThreadId;\nconst emailThreadId = $('Prep Data').item.json.emailThreadId;  // ← NEW\n\nconst label = labels.find(l => l.name.toLowerCase() === labelName.toLowerCase());\nif (!label) throw new Error(`Label not found after create attempt: ${labelName}`);\n\nconst criAgentLabel = labels.find(l => l.name.toLowerCase() === 'cri agent');\nif (!criAgentLabel) throw new Error('CRI Agent label not found. Please create CRI Agent label in Gmail first.');\n\nreturn { json: { labelId: label.id, criAgentLabelId: criAgentLabel.id, messageId, sentThreadId, emailThreadId } };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5136,
+        1536
+      ],
+      "id": "0912a3ed-1280-4949-81cc-1821d3a2f08a",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://gmail.googleapis.com/gmail/v1/users/me/threads/{{ $json.sentThreadId }}/modify",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "gmailOAuth2",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"addLabelIds\":[\"{{ $json.labelId }}\"],\"removeLabelIds\":[\"INBOX\"]}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        5360,
+        1536
+      ],
+      "id": "824bace3-d998-4e2e-9bba-06c8fef14242",
+      "name": "Apply to Thread",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gihkGbVbtcbeTvgq",
+          "name": "Gmail account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "==https://gmail.googleapis.com/gmail/v1/users/me/threads/{{ $('Code in JavaScript1').item.json.sentThreadId }}/modify",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "gmailOAuth2",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"addLabelIds\":[\"{{ $('Code in JavaScript1').item.json.criAgentLabelId }}\"]}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        5584,
+        1536
+      ],
+      "id": "2b9e8907-11ca-4a4a-8088-e2266010bddc",
+      "name": "HTTP Request",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gihkGbVbtcbeTvgq",
+          "name": "Gmail account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $input.all();\n\nlet mergeItems = [];\ntry { mergeItems = $('Merge5').all(); } catch(e) { console.warn('[BCP] Merge5 not available:', e.message); }\n\nlet sendItems = [];\ntry { sendItems = $('SEND - Email Me Results + Attach Resume').all(); } catch(e) { console.warn('[BCP] SEND not available:', e.message); }\n\nconst s = (v, len) => {\n  if (!v || typeof v !== 'string') return null;\n  const t = v.trim();\n  return t ? (len ? t.slice(0, len) : t) : null;\n};\nconst ni = (v, max) => {\n  if (typeof v !== 'number' || !isFinite(v) || v <= 0) return null;\n  const r = Math.round(v);\n  return (max && r > max) ? null : r;\n};\nconst nr = (v, min, max) => {\n  if (typeof v !== 'number' || !isFinite(v)) return null;\n  const r = Math.round(v);\n  return (r >= min && r <= max) ? r : null;\n};\nconst em = (v) => {\n  const str = s(v, 200);\n  return (str && /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(str)) ? str : null;\n};\nconst ar = (v, max) => Array.isArray(v)\n  ? v.slice(0, max).filter(i => typeof i === 'string' && i.trim())\n  : [];\nconst parseName = (dn) => {\n  const clean = s(dn, 200);\n  if (!clean) return [null, null];\n  const parts = clean.split(/\\s+/).filter(Boolean);\n  if (parts.length === 0) return [null, null];\n  if (parts.length === 1) return [parts[0], null];\n  return [parts[0], parts[parts.length - 1]];\n};\n\nconst result = [];\n\nfor (let i = 0; i < allItems.length; i++) {\n  const extracted = allItems[i].json.output || {};\n\n  if (i >= mergeItems.length) {\n    console.error(`[BCP] mergeItems out of bounds: i=${i}, len=${mergeItems.length}`);\n    continue;\n  }\n  if (sendItems.length > 0 && i >= sendItems.length) {\n    console.error(`[BCP] sendItems out of bounds: i=${i}, len=${sendItems.length}`);\n    continue;\n  }\n\n  const preData  = mergeItems[i].json;\n  const sendData = sendItems[i]?.json || {};\n  const output   = preData.output || {};\n\n  const displayName = s(preData.subjectCandidateName, 200)\n    || s(extracted.candidate_display_name, 200)\n    || s(preData.candidate_display_name, 200)\n    || 'Unknown';\n\n  let [firstName, lastName] = parseName(displayName);\n  if (!firstName) firstName = s(preData.candidate_first_name, 100);\n  if (!lastName)  lastName  = s(preData.candidate_last_name, 100);\n\n  let resumeBase64 = null;\n  let resumeMimeType = null;\n  let resumeFilename = null;\n\n  // Read resumeBinaryBase64 from preData (Merge5) first, then fall back to\n  // allItems direct input — the base64 may travel via allItems if Merge5's\n  // chain (ANALYZE etc.) drops non-analysis fields.\n  const extracted64 = preData.resumeBinaryBase64 || preData.resumeBase64Extracted\n    || allItems[i].json.resumeBinaryBase64 || '';\n\n  if (extracted64.length > 512) {\n    resumeBase64   = extracted64;\n    resumeMimeType = preData.resumeBinaryMimeType || preData.resumeMimeType\n      || allItems[i].json.resumeBinaryMimeType || allItems[i].json.resumeMimeType;\n    resumeFilename = preData.resumeBinaryFileName || preData.resumeFileName\n      || allItems[i].json.resumeBinaryFileName || allItems[i].json.resumeFileName;\n  } else {\n    console.warn('[BCP] No usable resume base64.',\n      '| preData.resumeBinaryBase64 len:', (preData.resumeBinaryBase64 || '').length,\n      '| allItems base64 len:', (allItems[i].json.resumeBinaryBase64 || '').length,\n      '| preData resume keys:', Object.keys(preData).filter(k => k.startsWith('resume')));\n  }\n\n  const payload = {\n    candidate_display_name:  displayName,\n    candidate_first_name:    firstName,\n    candidate_last_name:     lastName,\n    applied_role:            s(preData.applied_role, 200),\n    resume_email:            em(extracted.resume_email),\n    resume_phone:            s(extracted.resume_phone, 50),\n    candidate_city:          s(extracted.candidate_city, 100),\n    candidate_state:         s(extracted.candidate_state, 50),\n    candidate_zip:           s(extracted.candidate_zip, 20),\n    current_employer:        s(extracted.current_employer, 200),\n    current_title:           s(extracted.current_title, 200),\n    years_of_experience:     ni(extracted.years_of_experience, 60),\n    work_history_summary:    s(extracted.work_history_summary, 2000),\n    education_degree:        s(extracted.education_degree, 100),\n    education_major:         s(extracted.education_major, 200),\n    education_institution:   s(extracted.education_institution, 200),\n    education_year:          nr(extracted.education_year, 1950, 2030),\n    certifications:          ar(extracted.certifications, 20),\n    bar_admissions:          ar(extracted.bar_admissions, 20),\n    languages:               ar(extracted.languages, 20),\n    availability_notes:      s(extracted.availability_notes, 500),\n    typing_wpm:              ni(extracted.typing_wpm, 300),\n    desired_salary:          ni(extracted.desired_salary, 1000000),\n    ai_score:                nr(output.composite_score, 0, 100),\n    ai_tier:                 s(output.candidate_tier, 100),\n    ai_triage_action:        s(output.triage_action, 200),\n    ai_analysis:             output || null,\n    resume_base64:           resumeBase64,\n    resume_mime_type:        resumeMimeType ? s(resumeMimeType, 100) : null,\n    resume_filename:         resumeFilename ? s(resumeFilename, 255) : null,\n    source:                  'ZipRecruiter',\n    intake_email_message_id: s(preData.id, 200),\n  };\n\n  result.push({\n    json: {\n      ...allItems[i].json,\n      ...preData,\n      threadId:            sendData.threadId || null,\n      id:                  sendData.id || null,\n      originalMessageId:   preData.emailMsgId || null,\n      originalThreadId:    preData.emailThreadId || null,\n      applied_role:        preData.applied_role || null,\n      crm_payload:         JSON.stringify(payload),\n    },\n    binary: allItems[i].binary,\n  });\n}\n\nreturn result;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4016,
+        1536
+      ],
+      "id": "ea11493e-3125-4f44-b162-b8ec88ca496f",
+      "name": "Build CRM Payload"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://crm.corporaterecruitersinc.com/api/intake/candidate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "=application/json",
+        "body": "={{ $json.crm_payload }}",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_WITH_CRI_CRM_API_KEY_CREDENTIAL_ID",
+          "name": "CRI CRM API Key"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4240,
+        1536
+      ],
+      "id": "bb96bb7d-aa15-4443-83b8-e7f888ab7e12",
+      "name": "Post to CRM",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "zachary@corporaterecruitersinc.com",
+        "subject": "=⚠️ CRM Intake FAILED — Manual Entry Required: {{ try { JSON.parse($('Build CRM Payload').item.json.crm_payload).candidate_display_name } catch(e) { 'Unknown Candidate' } }}",
+        "message": "=<div style=\"font-family:Arial,sans-serif;padding:20px;background:#fff3e0;\">\n  <h3 style=\"color:#e65100;\">⚠️ CRM Intake Failed — Candidate Not Saved</h3>\n  <p>A candidate was fully processed but <strong>could not be saved to the CRM</strong>. You must add this candidate manually.</p>\n  <table style=\"border-collapse:collapse;width:100%;margin-top:12px;\">\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;width:160px;\">Error</td><td style=\"padding:6px 0;font-size:13px;color:#b71c1c;\">{{ $json.error?.message || $json.message || 'HTTP request failed' }}</td></tr>\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;\">Status Code</td><td style=\"padding:6px 0;font-size:13px;\">{{ $json.statusCode || 'N/A' }}</td></tr>\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;\">Candidate</td><td style=\"padding:6px 0;font-size:13px;\">{{ try { JSON.parse($('Build CRM Payload').item.json.crm_payload).candidate_display_name } catch(e) { 'Unknown' } }}</td></tr>\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;\">Applied Role</td><td style=\"padding:6px 0;font-size:13px;\">{{ try { JSON.parse($('Build CRM Payload').item.json.crm_payload).applied_role } catch(e) { 'Unknown' } }}</td></tr>\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;\">AI Score</td><td style=\"padding:6px 0;font-size:13px;\">{{ try { JSON.parse($('Build CRM Payload').item.json.crm_payload).ai_score } catch(e) { 'N/A' } }}/100</td></tr>\n  </table>\n  <p style=\"margin-top:16px;font-size:12px;color:#666;\">Actions to take:<br>1. Check the CRM is running at the configured URL<br>2. Verify the API key credential in n8n is correct<br>3. Add this candidate manually to the CRM<br>4. Check n8n execution logs for full error detail</p>\n  <p style=\"font-size:11px;color:#999;margin-top:12px;\">CRI Agent — Automated Alert — Internal Use Only</p>\n</div>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        4240,
+        1760
+      ],
+      "id": "crm-error-alert-node",
+      "name": "CRM Error Alert",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gihkGbVbtcbeTvgq",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        3440,
+        1536
+      ],
+      "id": "7a5d10be-53a9-4a4d-8836-a637c920b777",
+      "name": "EXTRACT - Resume Data"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-nano"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        3520,
+        1760
+      ],
+      "id": "b2c85deb-9d1c-4929-bc2f-6c1ccf0b45d6",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "wqpzrHhNEaTWGqpc",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const raw = $json.text || $json.output || '';\nlet extracted = {};\ntry {\n  const match = raw.match(/\\{[\\s\\S]*\\}/);\n  if (match) extracted = JSON.parse(match[0]);\n} catch (e) {}\nreturn { json: { ...$json, output: extracted } };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3792,
+        1536
+      ],
+      "id": "aee9390f-8a23-4537-88bf-a3313d33b4d0",
+      "name": "Parse EXTRACT Output"
+    },
+    {
+      "parameters": {
+        "jsCode": "const cjItems = $('Code in JavaScript').all();\nconst criAgentLabelId = $('Code in JavaScript1').item.json.criAgentLabelId;\nconst seen = new Set();\nconst out = [];\nfor (const item of cjItems) {\n  const msgId = item.json.id;\n  if (msgId && !seen.has(msgId)) {\n    seen.add(msgId);\n    out.push({ json: { messageId: msgId, criAgentLabelId } });\n  }\n}\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5808,
+        1536
+      ],
+      "id": "9ab2b670-1ae8-4ef2-8228-a94e15850812",
+      "name": "Get Message IDs"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://gmail.googleapis.com/gmail/v1/users/me/messages/{{ $json.messageId }}/modify",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "gmailOAuth2",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"addLabelIds\":[\"{{ $json.criAgentLabelId }}\"],\"removeLabelIds\":[\"UNREAD\",\"INBOX\"]}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        6032,
+        1536
+      ],
+      "id": "22c84b9a-b84b-49ab-bc75-795a9b376c10",
+      "name": "Mark Emails as Read",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gihkGbVbtcbeTvgq",
+          "name": "Gmail account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "zachary@corporaterecruitersinc.com",
+        "subject": "=⚠️ Skipped: {{ $json.subject || $json.resumeFileName || 'Unknown' }}\n",
+        "message": "=<div style=\"font-family:Arial,sans-serif;padding:20px;\">\n  <h3 style=\"color:#e65100;\">Attachment Not Processed</h3>\n  <p>An attachment from a ZipRecruiter application was filtered out because it was not classified as a resume.</p>\n  <table style=\"border-collapse:collapse;width:100%;margin-top:12px;\">\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;width:140px;\">Original Email</td><td style=\"padding:6px 0;font-size:13px;\">{{ $json.subject || 'Unknown' }}</td></tr>\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;\">File</td><td style=\"padding:6px 0;font-size:13px;\">{{ $json.resumeFileName || 'Unknown' }}</td></tr>\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;\">Applied Role</td><td style=\"padding:6px 0;font-size:13px;\">{{ $json.applied_role || 'Not detected' }}</td></tr>\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;\">Classified As</td><td style=\"padding:6px 0;font-size:13px;\">{{ $json.output?.doc_type || 'Unknown' }}</td></tr>\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;\">Confidence</td><td style=\"padding:6px 0;font-size:13px;\">{{ ($json.output?.confidence * 100).toFixed(0) }}%</td></tr>\n    <tr><td style=\"padding:6px 12px 6px 0;color:#666;font-size:13px;\">Reason</td><td style=\"padding:6px 0;font-size:13px;\">{{ $json.output?.reason || 'No reason provided' }}</td></tr>\n  </table>\n  <p style=\"margin-top:16px;font-size:12px;color:#999;\">Search your inbox for the subject line above to find the original email.</p>\n</div>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1968,
+        1456
+      ],
+      "id": "27e5fff8-b5fc-4f62-8c27-f4273502391f",
+      "name": "Send a message",
+      "webhookId": "b6fd62fe-491f-4cfc-ada3-8a44f15d90bb",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gihkGbVbtcbeTvgq",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const resumeText = $json.resumeText || $json.clean_resume || '';\n\nconst chatInput = `Resume Text:\n${resumeText}\n\nExtract these fields from the resume above and return as a JSON object. Return null for any field you cannot find. Return [] for empty arrays. Do NOT invent or guess values.\n\n{\n  \"candidate_display_name\": null,\n  \"resume_email\": null,\n  \"resume_phone\": null,\n  \"candidate_city\": null,\n  \"candidate_state\": null,\n  \"candidate_zip\": null,\n  \"current_employer\": null,\n  \"current_title\": null,\n  \"years_of_experience\": null,\n  \"work_history_summary\": null,\n  \"education_degree\": null,\n  \"education_major\": null,\n  \"education_institution\": null,\n  \"education_year\": null,\n  \"certifications\": [],\n  \"bar_admissions\": [],\n  \"languages\": [],\n  \"typing_wpm\": null,\n  \"desired_salary\": null,\n  \"availability_notes\": null\n}\n\nOutput ONLY the JSON object. No markdown, no explanation, no code block.`;\n\nreturn {\n  json: {\n    ...($json),\n    chatInput,\n    _resumeTextLength: resumeText.length,\n  },\n  binary: $binary,\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3216,
+        1536
+      ],
+      "id": "18c314ef-00fd-4987-affe-177ad14a08ab",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "binaryPropertyName": "resume",
+        "destinationKey": "resumeBinaryBase64",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        48,
+        1536
+      ],
+      "id": "3b74d5b2-c602-408a-99b3-e9082ea0d530",
+      "name": "Extract from File1"
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2026-03-21T00:16:36.654+00:00",
+          "Readable date": "March 21st 2026, 12:16:36 am",
+          "Readable time": "12:16:36 am",
+          "Day of week": "Saturday",
+          "Year": "2026",
+          "Month": "March",
+          "Day of month": "21",
+          "Hour": "00",
+          "Minute": "16",
+          "Second": "36",
+          "Timezone": "UTC (UTC+00:00)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "File Type": {
+      "main": [
+        [
+          {
+            "node": "EXTRACT - Text from PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EXTRACT – Text from DOC/DOCX1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EXTRACT – Text from DOC/DOCX1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Resume": {
+      "main": [
+        [
+          {
+            "node": "Cleanup resume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "o4-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ANALYZE - CRI Resume Scan (Structured)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleanup resume": {
+      "main": [
+        [
+          {
+            "node": "Get name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SPLIT - Attachments to Items (1 file = 1 item)": {
+      "main": [
+        [
+          {
+            "node": "GATE 1 - Allowed File Types (PDF/DOC/DOCX)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GATE 1 - Allowed File Types (PDF/DOC/DOCX)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXTRACT - Text from PDF": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GATE 2 - AI Classify Document Type": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "GATE 2B - Resume Only (type + confidence)": {
+      "main": [
+        [
+          {
+            "node": "Set Resume",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ANALYZE - CRI Resume Scan (Structured)": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FORMAT - Parse to Clean JSON": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "ANALYZE - CRI Resume Scan (Structured)",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "SPLIT - Attachments to Items (1 file = 1 item)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "GATE 2 - AI Classify Document Type",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "GATE 2 - AI Classify Document Type",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEND - Email Me Results + Attach Resume": {
+      "main": [
+        []
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "GATE 2B - Resume Only (type + confidence)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GATE 2 - AI Classify Document Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "SEND - Email Me Results + Attach Resume",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many messages1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Get attachments ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get name": {
+      "main": [
+        [
+          {
+            "node": "ANALYZE - CRI Resume Scan (Structured)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get attachments ": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages1": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXTRACT – Text from DOC/DOCX1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prep Data": {
+      "main": [
+        [
+          {
+            "node": "Create (if new)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create (if new)": {
+      "main": [
+        [
+          {
+            "node": "Get All",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Apply to Thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply to Thread": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build CRM Payload": {
+      "main": [
+        [
+          {
+            "node": "Post to CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to CRM": {
+      "main": [
+        [
+          {
+            "node": "Prep Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CRM Error Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXTRACT - Resume Data": {
+      "main": [
+        [
+          {
+            "node": "Parse EXTRACT Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "EXTRACT - Resume Data",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse EXTRACT Output": {
+      "main": [
+        [
+          {
+            "node": "Build CRM Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Get Message IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Message IDs": {
+      "main": [
+        [
+          {
+            "node": "Mark Emails as Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "EXTRACT - Resume Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "File Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": true,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "7Up67HU0g0-_WmDS8ueX1"
+  },
+  "versionId": "bcd2906a-9ab5-4a2c-9a86-0f11f3da193e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "63effdd9d9d958970c9401d124b1720a87f0f8dc062f2f18869df7742ae68bd9"
+  },
+  "id": "lmoFdyuVNZWuOnA3g5-NJ",
+  "tags": []
+}

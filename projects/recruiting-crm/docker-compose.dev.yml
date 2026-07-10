@@ -1,0 +1,22 @@
+# Local development — runs only PostgreSQL, Next.js runs natively via `npm run dev`
+services:
+  crm-db:
+    image: postgres:16-alpine
+    container_name: cri-crm-db-dev
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: cri_crm
+      POSTGRES_USER: cri
+      POSTGRES_PASSWORD: devpassword
+    volumes:
+      - crm-db-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cri -d cri_crm"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  crm-db-dev-data:

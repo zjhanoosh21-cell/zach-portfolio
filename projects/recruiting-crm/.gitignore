@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+.next/
+out/
+dist/
+tsconfig.tsbuildinfo
+
+# Environment files — NEVER commit these
+.env
+.env.local
+.env.production
+.env.*.local
+.env.local-prod
+
+# Uploads (resume files) — stored on server, not in git
+uploads/
+
+# Prisma generated
+app/generated/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code session data
+.claude/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/

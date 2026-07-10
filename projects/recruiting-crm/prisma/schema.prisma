@@ -1,0 +1,553 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
+
+enum CandidateStatus {
+  NEW
+  REVIEWED
+  ACTIVE
+  PLACED
+  ON_HOLD
+  REJECTED
+  DO_NOT_CONSIDER
+}
+
+enum CandidateTier {
+  TIER_1
+  TIER_2
+  TIER_3
+  TIER_4
+}
+
+enum TriageAction {
+  ADVANCE_PRIORITY_CALL
+  ADVANCE_SCHEDULE_REVIEW
+  HOLD_RECRUITER_JUDGMENT
+  PASS_DO_NOT_SUBMIT
+}
+
+enum RoleType {
+  LEGAL_SECRETARY
+  LEGAL_ASSISTANT
+  PARALEGAL
+  BILLING_CLERK
+  BILLING_COORDINATOR
+  OTHER_LEGAL
+  OTHER_PROFESSIONAL
+  NON_LEGAL
+}
+
+enum JobOrderStatus {
+  OPEN
+  ON_HOLD
+  FILLED
+  FILLED_BY_COMPETITOR
+  CANCELLED
+}
+
+enum JobOrderType {
+  DIRECT_HIRE
+  TEMP_TO_HIRE
+  TEMP
+  CONTRACT
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  CLIENT_REVIEW
+  INTERVIEW_SCHEDULED
+  INTERVIEW_COMPLETED
+  OFFER_EXTENDED
+  OFFER_ACCEPTED
+  OFFER_DECLINED
+  REJECTED_BY_CLIENT
+  CANDIDATE_WITHDREW
+  PLACED
+}
+
+enum NoteType {
+  GENERAL
+  PHONE_SCREEN
+  INTERVIEW_NOTES
+  REFERENCE_CHECK
+  CLIENT_FEEDBACK
+  INTERNAL
+  SYSTEM
+}
+
+enum ActivityType {
+  STATUS_CHANGED
+  PROFILE_UPDATED
+  NOTE_ADDED
+  SUBMITTED_TO_JOB
+  SUBMISSION_STATUS_CHANGED
+  RESUME_VIEWED
+  INTAKE_FROM_N8N
+  CANDIDATE_CREATED
+  REAPPLIED
+  STATUS_REOPENED
+}
+
+// ─────────────────────────────────────────
+// USER
+// ─────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  isActive     Boolean  @default(true)
+  isAdmin      Boolean  @default(false)
+  isManager    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profileFieldPrefs Json?   // Per-user: { visible: string[] } — which fields to show in candidate profile view mode
+  colorTheme        String? // Per-user accent color theme: null = default (Corporate Blue)
+  dashboardPrefs    Json?   // Per-user: { sections: { id: string, visible: boolean, collapsed: boolean }[] }
+
+  notes         Note[]
+  submissions   Submission[]
+  activityLog   ActivityLog[]
+  assignedJobs  JobOrder[]    @relation("AssignedJobs")
+  notepad       UserNotepad?
+  discussions   Discussion[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// USER NOTEPAD (per-user persistent scratchpad)
+// ─────────────────────────────────────────
+
+model UserNotepad {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  pages     Json     @default("[]") // Array of { id, title, content }
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_notepads")
+}
+
+// ─────────────────────────────────────────
+// API KEY (for n8n intake endpoint)
+// ─────────────────────────────────────────
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  name       String
+  keyHash    String    @unique
+  prefix     String
+  isActive   Boolean   @default(true)
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@map("api_keys")
+}
+
+// ─────────────────────────────────────────
+// APP SETTINGS (singleton row)
+// ─────────────────────────────────────────
+
+model AppSettings {
+  id                  String   @id @default("singleton")
+  deletionPinHash     String?  // bcrypt hash of 4-digit deletion PIN
+  // General settings
+  companyName         String   @default("Corporate Recruiters Inc.")
+  intakeEnabled       Boolean  @default(true)
+  aiScoringEnabled    Boolean  @default(true)
+  defaultFollowUpDays Int      @default(3)
+  updatedAt           DateTime @updatedAt
+
+  @@map("app_settings")
+}
+
+// ─────────────────────────────────────────
+// CLIENT (law firms, companies)
+// ─────────────────────────────────────────
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  industry  String?
+  specialty String?
+  city      String?
+  state     String?
+  website   String?
+  isActive  Boolean  @default(true)
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contacts  ClientContact[]
+  jobOrders JobOrder[]
+
+  @@index([name])
+  @@map("clients")
+}
+
+model ClientContact {
+  id        String   @id @default(cuid())
+  clientId  String
+  name      String
+  title     String?
+  email     String?
+  phone     String?
+  isPrimary Boolean  @default(false)
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@map("client_contacts")
+}
+
+// ─────────────────────────────────────────
+// CANDIDATE
+// ─────────────────────────────────────────
+
+model Candidate {
+  id         String    @id @default(cuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  reviewedAt DateTime?
+
+  // Identity
+  firstName   String?
+  lastName    String?
+  displayName String?
+  resumeEmail String?
+  resumePhone String?
+  linkedinUrl String?
+
+  // Location (from resume)
+  candidateAddress  String?  // Street address
+  candidateCity     String?
+  candidateState    String?
+  candidateZip      String?
+  candidateLocation String?  // "Chicago, IL" combined
+
+  // Work history (from resume)
+  currentEmployer    String?
+  currentTitle       String?
+  yearsOfExperience  Int?
+  workHistorySummary String?
+
+  // Education (from resume)
+  educationDegree      String?
+  educationMajor       String?
+  educationInstitution String?
+  educationYear        Int?
+
+  // Credentials & preferences
+  certifications    String[]
+  barAdmissions     String[]
+  languages         String[]
+  availabilityNotes String?
+  typingWpm         Int?     // Typing speed — common legal requirement
+  desiredSalary     Int?     // Candidate's stated salary expectation
+  followUpDate      DateTime? // Recruiter-set follow-up reminder date
+  manualScore       Int?      // Recruiter-set manual score override (0–100)
+  useManualScore    Boolean   @default(false) // Show manual score instead of AI score
+  priorityCall      Boolean   @default(false) // Recruiter-set manual priority call flag
+  originalEntryDate DateTime? // When CRI originally had this candidate (e.g. RESUMate import date)
+
+  // Source / intake
+  source               String          @default("ZipRecruiter")
+  appliedRole          String?
+  pastAppliedRoles     String[]        // Historical roles this candidate has applied for (newest last); appended on re-intake
+  lastReappliedAt      DateTime?       // When this candidate most recently re-applied via intake (used for "Returning Candidates" widget)
+  intakeEmailMessageId String?         @unique
+  resumateId           String?         @unique  // RESUMate legacy ID — dedup key for imports
+
+  // Status
+  status      CandidateStatus @default(NEW)
+  placedAt    DateTime?
+  isDuplicate Boolean         @default(false) // Set automatically when a same-name candidate already exists; cleared by recruiter
+
+  // AI scores (denormalized for fast list queries)
+  aiCompositeScore   Int?
+  effectiveScore     Int?    // DB-generated: manualScore if useManualScore, else aiCompositeScore
+  aiTier             CandidateTier?
+  aiTriageAction     TriageAction?
+  aiDetectedRoleType RoleType?
+
+  // AI factor scores (1–5)
+  scoreLawFirmExp      Int?
+  scoreLongevity       Int?
+  scoreTitleSpecific   Int?
+  scoreTechnicalSkills Int?
+  scoreProfessionalism Int?
+
+  // AI arrays (PostgreSQL native — queryable with .has())
+  practiceAreas String[]
+  keySkills     String[]
+  topStrengths  String[]
+  topConcerns   String[]
+  riskFlags     String[]
+  aiSummary     String?
+
+  // Full raw AI output preserved
+  aiRawOutput Json?
+
+  // Resume file (primary — set by n8n intake or first manual upload)
+  resumeFileName    String?
+  resumeMimeType    String?
+  resumeStoragePath String?
+  resumeUploadedAt  DateTime?
+
+  // Relations
+  notes       Note[]
+  submissions Submission[]
+  activityLog ActivityLog[]
+  attachments CandidateAttachment[]
+  discussions Discussion[]
+
+  @@index([aiCompositeScore])
+  @@index([effectiveScore])
+  @@index([aiTier])
+  @@index([status])
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([candidateState])
+  @@index([resumeEmail])
+  @@index([aiDetectedRoleType])
+  @@index([lastReappliedAt])
+  @@map("candidates")
+}
+
+model CandidateAttachment {
+  id          String    @id @default(cuid())
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  fileName    String
+  mimeType    String
+  storagePath String
+  uploadedAt  DateTime  @default(now())
+
+  @@index([candidateId])
+  @@map("candidate_attachments")
+}
+
+// ─────────────────────────────────────────
+// JOB ORDER
+// ─────────────────────────────────────────
+
+model JobOrder {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title          String
+  clientId       String?
+  clientName     String
+  location       String?
+  jobType        JobOrderType   @default(DIRECT_HIRE)
+  status         JobOrderStatus @default(OPEN)
+  roleType       RoleType?
+  practiceAreas  String[]
+  requiredSkills String[]
+  salaryMin      Int?
+  salaryMax      Int?
+  billRate       Decimal?       @db.Decimal(8, 2)
+  payRate        Decimal?       @db.Decimal(8, 2)
+  priority       Int            @default(2)
+  description    String?
+  internalNotes  String?
+  openedAt       DateTime       @default(now())
+  targetFillDate DateTime?
+  filledAt       DateTime?
+
+  assignedToId   String?
+  assignedTo     User?        @relation("AssignedJobs", fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  client      Client?      @relation(fields: [clientId], references: [id])
+  submissions Submission[]
+  notes       Note[]
+  activityLog ActivityLog[]
+  discussions Discussion[]
+  attachments JobAttachment[]
+
+  @@index([status])
+  @@index([roleType])
+  @@index([clientId])
+  @@index([assignedToId])
+  @@map("job_orders")
+}
+
+// ─────────────────────────────────────────
+// SUBMISSION (Candidate <-> JobOrder)
+// ─────────────────────────────────────────
+
+model Submission {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  candidateId   String
+  jobOrderId    String
+  submittedById String?
+  status        SubmissionStatus @default(SUBMITTED)
+
+  clientFeedback String?
+  interviewDate  DateTime?
+  offerAmount    Int?
+  placedAt       DateTime?
+  placementFee   Decimal?  @db.Decimal(10, 2)
+
+  candidate   Candidate  @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  jobOrder    JobOrder   @relation(fields: [jobOrderId], references: [id], onDelete: Cascade)
+  submittedBy User?      @relation(fields: [submittedById], references: [id], onDelete: SetNull)
+  notes       Note[]
+
+  @@unique([candidateId, jobOrderId])
+  @@index([candidateId])
+  @@index([jobOrderId])
+  @@index([status])
+  @@map("submissions")
+}
+
+// ─────────────────────────────────────────
+// NOTE (polymorphic)
+// ─────────────────────────────────────────
+
+model Note {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  content      String
+  type         NoteType @default(GENERAL)
+
+  authorId     String?
+  candidateId  String?
+  jobOrderId   String?
+  submissionId String?
+
+  author     User?       @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  candidate  Candidate?  @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  jobOrder   JobOrder?   @relation(fields: [jobOrderId], references: [id], onDelete: Cascade)
+  submission Submission? @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@index([jobOrderId])
+  @@index([submissionId])
+  @@map("notes")
+}
+
+// ─────────────────────────────────────────
+// EMAIL TEMPLATES
+// ─────────────────────────────────────────
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  name      String
+  subject   String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("email_templates")
+}
+
+// ─────────────────────────────────────────
+// ACTIVITY LOG (audit trail)
+// ─────────────────────────────────────────
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  type        ActivityType
+  description String
+  metadata    Json?
+
+  userId      String?
+  candidateId String?
+  jobOrderId  String?
+
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  candidate Candidate? @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  jobOrder  JobOrder?  @relation(fields: [jobOrderId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@index([jobOrderId])
+  @@index([createdAt])
+  @@map("activity_log")
+}
+
+// ─────────────────────────────────────────
+// DISCUSSION (recruiter ↔ recruiter, with @mentions)
+// ─────────────────────────────────────────
+
+model Discussion {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  content     String
+
+  authorId    String?
+  candidateId String?
+  jobOrderId  String?
+
+  author        User?          @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  candidate     Candidate?     @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  jobOrder      JobOrder?      @relation(fields: [jobOrderId], references: [id], onDelete: Cascade)
+  notifications Notification[]
+
+  @@index([candidateId])
+  @@index([jobOrderId])
+  @@map("discussions")
+}
+
+// ─────────────────────────────────────────
+// NOTIFICATION (@mention inbox)
+// ─────────────────────────────────────────
+
+model Notification {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  readAt       DateTime?
+
+  userId       String
+  discussionId String
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discussion Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, readAt])
+  @@map("notifications")
+}
+
+// ─────────────────────────────────────────
+// JOB ATTACHMENT
+// ─────────────────────────────────────────
+
+model JobAttachment {
+  id          String   @id @default(cuid())
+  jobOrderId  String
+  fileName    String
+  mimeType    String
+  storagePath String
+  uploadedAt  DateTime @default(now())
+
+  jobOrder JobOrder @relation(fields: [jobOrderId], references: [id], onDelete: Cascade)
+
+  @@index([jobOrderId])
+  @@map("job_attachments")
+}

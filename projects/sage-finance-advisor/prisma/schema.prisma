@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Single-user for now. If this becomes a product, add a User model and
+// userId foreign keys here — the data layer in lib/ is the only consumer.
+
+model Profile {
+  id               String   @id @default("main")
+  name             String?
+  birthYear        Int?
+  maritalStatus    String?
+  dependents       Int?
+  state            String?
+  employmentStatus String?
+  riskTolerance    String?  // conservative | moderate | aggressive
+  retirementAge    Int?
+  notes            String?
+  updatedAt        DateTime @updatedAt
+}
+
+model Account {
+  id           String    @id @default(cuid())
+  name         String
+  institution  String?
+  type         String    // checking, savings, brokerage, retirement, crypto, real_estate, vehicle, other_asset, credit_card, student_loan, auto_loan, mortgage, personal_loan, other_debt
+  category     String    // ASSET | LIABILITY
+  balance      Float     @default(0)
+  interestRate Float?    // APR for debts, APY for savings
+  notes        String?
+  holdings     Holding[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Holding {
+  id         String  @id @default(cuid())
+  accountId  String
+  account    Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  symbol     String
+  name       String?
+  quantity   Float
+  price      Float   @default(0)
+  assetClass String? // us_stock, intl_stock, bond, cash, crypto, other
+}
+
+model IncomeSource {
+  id        String   @id @default(cuid())
+  name      String
+  amount    Float
+  frequency String   @default("monthly") // weekly, biweekly, semimonthly, monthly, annual
+  type      String?  // salary, business, rental, investment, other
+  createdAt DateTime @default(now())
+}
+
+model BudgetCategory {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  plannedAmount Float    // monthly
+  group         String   @default("needs") // needs | wants | savings
+  createdAt     DateTime @default(now())
+}
+
+model Goal {
+  id            String    @id @default(cuid())
+  name          String
+  description   String?
+  targetAmount  Float
+  currentAmount Float     @default(0)
+  targetDate    DateTime?
+  priority      Int       @default(2) // 1 high, 2 medium, 3 low
+  status        String    @default("active") // active | achieved | paused
+  createdBy     String    @default("user") // user | advisor
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Snapshot {
+  id          String   @id @default(cuid())
+  date        String   @unique // YYYY-MM-DD
+  assets      Float
+  liabilities Float
+  netWorth    Float
+  createdAt   DateTime @default(now())
+}
+
+model Conversation {
+  id        String    @id @default(cuid())
+  title     String    @default("New conversation")
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // user | assistant
+  content        String
+  toolSummary    String?      // JSON array of tool actions taken during this turn
+  createdAt      DateTime     @default(now())
+}
+
+model AdvisorNote {
+  id        String   @id @default(cuid())
+  content   String
+  category  String?  // goals, situation, preferences, follow_up
+  createdAt DateTime @default(now())
+}

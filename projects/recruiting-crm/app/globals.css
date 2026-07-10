@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* CRI Brand Colors */
+  --cri-blue: #1a6bbf;
+  --cri-blue-dark: #155da3;
+  --cri-navy: #0f2a4a;
+
+  /* shadcn/ui component variables */
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #1a6bbf;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ─────────────────────────────────────────
+   COLOR THEMES
+   Applied via data-theme on <html>.
+   Each theme overrides --cri-blue / --cri-blue-dark / --ring
+   and remaps the most common Tailwind blue-* utility classes.
+───────────────────────────────────────── */
+
+/* ── Emerald ── */
+[data-theme="emerald"] {
+  --cri-blue: #059669;
+  --cri-blue-dark: #047857;
+  --ring: #059669;
+}
+[data-theme="emerald"] .bg-blue-600                { background-color: #059669 !important; }
+[data-theme="emerald"] .bg-blue-700                { background-color: #047857 !important; }
+[data-theme="emerald"] .hover\:bg-blue-700:hover   { background-color: #047857 !important; }
+[data-theme="emerald"] .bg-blue-50                 { background-color: #ecfdf5 !important; }
+[data-theme="emerald"] .bg-blue-100                { background-color: #d1fae5 !important; }
+[data-theme="emerald"] .text-blue-600              { color: #059669 !important; }
+[data-theme="emerald"] .text-blue-700              { color: #047857 !important; }
+[data-theme="emerald"] .hover\:text-blue-700:hover { color: #047857 !important; }
+[data-theme="emerald"] .border-blue-600            { border-color: #059669 !important; }
+[data-theme="emerald"] .border-blue-500            { border-color: #059669 !important; }
+[data-theme="emerald"] .border-blue-200            { border-color: #a7f3d0 !important; }
+
+/* ── Violet ── */
+[data-theme="violet"] {
+  --cri-blue: #7c3aed;
+  --cri-blue-dark: #6d28d9;
+  --ring: #7c3aed;
+}
+[data-theme="violet"] .bg-blue-600                { background-color: #7c3aed !important; }
+[data-theme="violet"] .bg-blue-700                { background-color: #6d28d9 !important; }
+[data-theme="violet"] .hover\:bg-blue-700:hover   { background-color: #6d28d9 !important; }
+[data-theme="violet"] .bg-blue-50                 { background-color: #f5f3ff !important; }
+[data-theme="violet"] .bg-blue-100                { background-color: #ede9fe !important; }
+[data-theme="violet"] .text-blue-600              { color: #7c3aed !important; }
+[data-theme="violet"] .text-blue-700              { color: #6d28d9 !important; }
+[data-theme="violet"] .hover\:text-blue-700:hover { color: #6d28d9 !important; }
+[data-theme="violet"] .border-blue-600            { border-color: #7c3aed !important; }
+[data-theme="violet"] .border-blue-500            { border-color: #7c3aed !important; }
+[data-theme="violet"] .border-blue-200            { border-color: #ddd6fe !important; }
+
+/* ── Rose ── */
+[data-theme="rose"] {
+  --cri-blue: #e11d48;
+  --cri-blue-dark: #be123c;
+  --ring: #e11d48;
+}
+[data-theme="rose"] .bg-blue-600                  { background-color: #e11d48 !important; }
+[data-theme="rose"] .bg-blue-700                  { background-color: #be123c !important; }
+[data-theme="rose"] .hover\:bg-blue-700:hover     { background-color: #be123c !important; }
+[data-theme="rose"] .bg-blue-50                   { background-color: #fff1f2 !important; }
+[data-theme="rose"] .bg-blue-100                  { background-color: #ffe4e6 !important; }
+[data-theme="rose"] .text-blue-600                { color: #e11d48 !important; }
+[data-theme="rose"] .text-blue-700                { color: #be123c !important; }
+[data-theme="rose"] .hover\:text-blue-700:hover   { color: #be123c !important; }
+[data-theme="rose"] .border-blue-600              { border-color: #e11d48 !important; }
+[data-theme="rose"] .border-blue-500              { border-color: #e11d48 !important; }
+[data-theme="rose"] .border-blue-200              { border-color: #fecdd3 !important; }
+
+/* ── Slate ── */
+[data-theme="slate"] {
+  --cri-blue: #475569;
+  --cri-blue-dark: #334155;
+  --ring: #475569;
+}
+[data-theme="slate"] .bg-blue-600                 { background-color: #475569 !important; }
+[data-theme="slate"] .bg-blue-700                 { background-color: #334155 !important; }
+[data-theme="slate"] .hover\:bg-blue-700:hover    { background-color: #334155 !important; }
+[data-theme="slate"] .bg-blue-50                  { background-color: #f1f5f9 !important; }
+[data-theme="slate"] .bg-blue-100                 { background-color: #e2e8f0 !important; }
+[data-theme="slate"] .text-blue-600               { color: #475569 !important; }
+[data-theme="slate"] .text-blue-700               { color: #334155 !important; }
+[data-theme="slate"] .hover\:text-blue-700:hover  { color: #334155 !important; }
+[data-theme="slate"] .border-blue-600             { border-color: #475569 !important; }
+[data-theme="slate"] .border-blue-500             { border-color: #475569 !important; }
+[data-theme="slate"] .border-blue-200             { border-color: #cbd5e1 !important; }
+
+/* ── Amber ── */
+[data-theme="amber"] {
+  --cri-blue: #d97706;
+  --cri-blue-dark: #b45309;
+  --ring: #d97706;
+}
+[data-theme="amber"] .bg-blue-600                 { background-color: #d97706 !important; }
+[data-theme="amber"] .bg-blue-700                 { background-color: #b45309 !important; }
+[data-theme="amber"] .hover\:bg-blue-700:hover    { background-color: #b45309 !important; }
+[data-theme="amber"] .bg-blue-50                  { background-color: #fffbeb !important; }
+[data-theme="amber"] .bg-blue-100                 { background-color: #fef3c7 !important; }
+[data-theme="amber"] .text-blue-600               { color: #d97706 !important; }
+[data-theme="amber"] .text-blue-700               { color: #b45309 !important; }
+[data-theme="amber"] .hover\:text-blue-700:hover  { color: #b45309 !important; }
+[data-theme="amber"] .border-blue-600             { border-color: #d97706 !important; }
+[data-theme="amber"] .border-blue-500             { border-color: #d97706 !important; }
+[data-theme="amber"] .border-blue-200             { border-color: #fde68a !important; }

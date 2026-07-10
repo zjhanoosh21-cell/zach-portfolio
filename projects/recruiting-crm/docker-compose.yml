@@ -1,0 +1,48 @@
+services:
+  crm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cri-crm
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://cri:${DB_PASSWORD}@crm-db:5432/cri_crm?connection_limit=20
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NODE_ENV: ${NODE_ENV:-production}
+    volumes:
+      - crm-uploads:/app/uploads   # named volume — Docker manages permissions correctly
+    depends_on:
+      crm-db:
+        condition: service_healthy
+    networks:
+      - cri-crm-net   # internal: reach the database
+      - caddy-net      # external: Caddy reverse proxy can reach this container
+
+  crm-db:
+    image: postgres:16-alpine
+    container_name: cri-crm-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cri_crm
+      POSTGRES_USER: cri
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - crm-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cri -d cri_crm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cri-crm-net   # internal only — DB is not exposed to Caddy or the internet
+
+volumes:
+  crm-db-data:
+  crm-uploads:      # Resume/file storage — managed by Docker, survives container rebuilds
+
+networks:
+  cri-crm-net:
+    driver: bridge
+  caddy-net:
+    external: true  # Must already exist on VPS (created by the n8n stack)

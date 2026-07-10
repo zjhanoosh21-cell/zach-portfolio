@@ -1,0 +1,10 @@
+# Local-only overrides — run the PRODUCTION stack on your laptop and reach it in a browser.
+# NOT used on the VPS (there you run plain `docker compose up`, which does not load this file).
+# Usage: docker compose --env-file .env.local-prod -f docker-compose.yml -f docker-compose.local.yml up -d --build
+services:
+  crm:
+    ports:
+      - "3000:3000"      # browse the app at http://localhost:3000
+  crm-db:
+    ports:
+      - "5433:5432"      # host 5433 (5432 is the dev DB) — seed from host against localhost:5433

@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "JobOrderStatus" ADD VALUE 'FILLED_BY_COMPETITOR';

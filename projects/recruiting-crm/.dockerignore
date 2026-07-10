@@ -1,0 +1,15 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+node_modules
+.next
+uploads
+*.log
+*.md
+README*
+.DS_Store
+docker-compose*.yml
+Dockerfile
+scripts/backup-db.sh
