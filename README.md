@@ -11,7 +11,8 @@ internal agency tooling, and personal projects.
 
 | Project | What it is | Stack | Status |
 |---------|-----------|-------|--------|
-| [Recruiting CRM](projects/recruiting-crm/) | Custom CRM for a legal-staffing recruiting firm — candidates, jobs, clients, analytics, AI-scored intake | Next.js (App Router), Prisma + Postgres, Tailwind, Docker | In production use by client |
+| [Recruiting CRM](projects/recruiting-crm/) | Custom CRM for a legal-staffing recruiting firm — candidates, jobs, clients, analytics, AI-scored intake. **Runnable demo** with seeded data + demo login | Next.js (App Router), Prisma + Postgres, Tailwind, Docker | In production use by client |
+| [Draw Manager](projects/draw-manager/) | Construction draw management for a custom-home builder — line-item budgets, draws, change orders, lien waivers, bank-ready PDFs. **Runnable demo** with seeded data + demo login | Next.js, Prisma + Postgres, Tailwind, jsPDF | In production use by client (Vercel) |
 | [Resume Scanner](projects/resume-scanner-n8n/) | 44-node n8n workflow: watches a Gmail inbox, parses resumes with an LLM, scores candidates, and feeds the CRM via API | n8n, OpenAI (o4-mini), Gmail API, TypeScript migration script | Live, in daily client use |
 | [Prospect Engine](projects/prospect-engine/) | Generates a fully branded proof-of-concept website per sales prospect — real logo, sampled brand colors, trade-matched content — served on a wildcard preview domain | Next.js dynamic routing, Vercel, JSON-driven site schema | Live (v2), used for real outreach |
 | [Sage — Personal Finance Advisor](projects/sage-finance-advisor/) | Local-first finance app with a Claude-powered advisor that updates your accounts, budget, and goals directly from conversation (streaming + tool use) | Next.js, Prisma + SQLite, Anthropic SDK, Recharts, Tailwind v4 | Personal project, feature-complete |
@@ -29,12 +30,15 @@ internal agency tooling, and personal projects.
 - **Full-stack range** — schema design through UI polish, plus the unglamorous parts:
   deployment docs, entrypoint scripts, idempotent sync jobs, and secrets hygiene.
 
-## Notes on client work
+## Try the apps
 
-Client projects here are included with identifying data removed — no candidate resumes,
-prospect records, environment files, or databases are in this repo. This repo is private;
-the resume-scanner workflow JSON still references the client's production domain and would
-need a sanitization pass before any public sharing.
+The two client apps are set up to be **clicked through, not just read**: each has a
+one-command demo path (Docker Postgres → migrate → seed → run) documented in its README, a
+demo login printed right on the sign-in page, and a seeded dataset that fills every screen.
+
+All demo data is fictional — invented people, firms, addresses, and dollar amounts. No real
+candidate resumes, homeowner records, prospect data, environment files, or databases are in
+this repo, and the n8n workflow export is sanitized (placeholder endpoints, no credentials).
 
 ---
 

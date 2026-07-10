@@ -15,10 +15,10 @@ async function main() {
   const jamesPassword = process.env.JAMES_PASSWORD ?? "password";
 
   const zachary = await prisma.user.upsert({
-    where: { email: "zachary@corporaterecruitersinc.com" },
+    where: { email: "zach@example.com" },
     update: {},
     create: {
-      email: "zachary@corporaterecruitersinc.com",
+      email: "zach@example.com",
       name: "Zachary Hanoosh",
       passwordHash: await bcrypt.hash(zacharyPassword, 10),
     },
@@ -76,7 +76,7 @@ async function main() {
           id: "phase-1-task-2",
           title: "Register business domain + set up email",
           description:
-            "Register a trade-focused domain (e.g. tradewebstudio.com). Set up Google Workspace with zachary@ and james@ accounts. This is your cold outreach domain — NOT corporaterecruitersinc.com.",
+            "Register a trade-focused domain (e.g. tradewebstudio.com). Set up Google Workspace with zachary@ and james@ accounts. This is your cold outreach domain — NOT your day-job domain.",
           assigneeId: james.id,
           status: "pending",
           order: 2,
@@ -126,7 +126,7 @@ async function main() {
           id: "phase-1-task-7",
           title: "Send first 10 personalized outreach messages",
           description:
-            "Use the Cold Email — Plumbing template in Documents. Attach the mockup you built for their specific business. Send from your new business domain, not CRI email.",
+            "Use the Cold Email — Plumbing template in Documents. Attach the mockup you built for their specific business. Send from your new business domain, not your day-job email.",
           assigneeId: zachary.id,
           status: "pending",
           order: 7,
@@ -580,7 +580,7 @@ Either way, keep the mockup.
 — Zachary
 [Phone number]
 [Business website]
-[Business email — NOT CRI email]
+[Business email — NOT your day-job email]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PERSONALIZATION CHECKLIST
@@ -593,7 +593,7 @@ Before sending, verify:
 □ Load time stat is accurate (run their site through GTmetrix)
 □ Mockup is attached and shows their business name
 □ Your Calendly link is live
-□ Sent from your business email, NOT corporaterecruitersinc.com
+□ Sent from your business email, NOT your day-job domain
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 NOTES
@@ -925,7 +925,7 @@ STEP 1 — REGISTER A DEDICATED DOMAIN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Register a NEW domain specifically for cold outreach. Never use:
 • Your main business domain (trashes it if you get spam complaints)
-• zachary@corporaterecruitersinc.com (confusing to plumbers + risks CRI reputation)
+• Your day-job email (confusing to plumbers + risks your employer’s reputation)
 
 Good domain name patterns:
 • get[yourbrand].com

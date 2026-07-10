@@ -7,7 +7,7 @@ the external `caddy-net` network "created by the n8n stack," so this is a co-loc
 Architecture once live:
 ```
 ZipRecruiter email → CRI Gmail → n8n (same VPS) → POST /api/intake/candidate → CRM (Next.js+Postgres)
-                                                       ↑ Caddy terminates HTTPS at crm.corporaterecruitersinc.com
+                                                       ↑ Caddy terminates HTTPS at crm.example.com
 ```
 
 > **Security posture:** the CRM already has full app-level auth (NextAuth login, bcrypt, roles, deletion
@@ -38,7 +38,7 @@ Running list — check off each item. Sections are chronological.
   ```
   DB_PASSWORD=<openssl rand -base64 32>
   NEXTAUTH_SECRET=<openssl rand -base64 32>
-  NEXTAUTH_URL=https://crm.corporaterecruitersinc.com
+  NEXTAUTH_URL=https://crm.example.com
   NODE_ENV=production
   ```
   - `compose` builds `DATABASE_URL` automatically from `DB_PASSWORD` (see `docker-compose.yml`).
@@ -46,8 +46,8 @@ Running list — check off each item. Sections are chronological.
   - `NEXTAUTH_URL` must be `https://` — plain HTTP breaks sessions (Secure cookies).
 
 ### DNS
-- [ ] Add an **A record**: `crm.corporaterecruitersinc.com` → Hostinger VPS public IP.
-- [ ] Wait for propagation before the Caddy step (`dig crm.corporaterecruitersinc.com`). Caddy needs the
+- [ ] Add an **A record**: `crm.example.com` → Hostinger VPS public IP.
+- [ ] Wait for propagation before the Caddy step (`dig crm.example.com`). Caddy needs the
       name resolving to the VPS to issue a Let's Encrypt cert.
 
 ---
@@ -86,7 +86,7 @@ docker run --rm \
   --network "container:cri-crm-db" \
   -v "$(pwd)":/repo -w /repo \
   -e DATABASE_URL="postgresql://cri:${DB_PASSWORD}@localhost:5432/cri_crm" \
-  node:20-alpine sh -lc "apk add --no-cache openssl >/dev/null && npm ci >/dev/null 2>&1 && npx prisma generate >/dev/null 2>&1 && npx tsx scripts/seed.ts --email zachary@corporaterecruitersinc.com --name 'Zachary' --password 'STRONG_PASSWORD_HERE'"
+  node:20-alpine sh -lc "apk add --no-cache openssl >/dev/null && npm ci >/dev/null 2>&1 && npx prisma generate >/dev/null 2>&1 && npx tsx scripts/seed.ts --email admin@example.com --name 'Zachary' --password 'STRONG_PASSWORD_HERE'"
 ```
 - [ ] **Copy the `crm_…` API key it prints — it is shown only once.** Store it in a password manager.
 - [ ] This key goes into the n8n credential in Phase 4.
@@ -97,13 +97,13 @@ docker run --rm \
 
 Add the CRM site to the Caddyfile that already fronts n8n:
 ```caddyfile
-crm.corporaterecruitersinc.com {
+crm.example.com {
     reverse_proxy crm:3000
 }
 ```
 - [ ] `crm` resolves over the shared `caddy-net` network (the compose service name).
 - [ ] Reload Caddy: `docker exec caddy caddy reload --config /etc/caddy/Caddyfile`
-- [ ] Verify: `curl -I https://crm.corporaterecruitersinc.com` → `200` with a valid cert.
+- [ ] Verify: `curl -I https://crm.example.com` → `200` with a valid cert.
 - [ ] Open the URL in a browser → login page loads → log in with the seeded admin.
 
 ---
@@ -120,7 +120,7 @@ reads `o4-mini`.
   - Header Value: *(the `crm_…` key from the Phase 2 seed)*
 - [ ] Import the updated `cri-resume-scanner.json` (replaces the old version).
 - [ ] Open the **Post to CRM** node → confirm it uses the `CRI CRM API Key` credential, and the URL is
-      `https://crm.corporaterecruitersinc.com/api/intake/candidate`.
+      `https://crm.example.com/api/intake/candidate`.
       *(Optional optimization: since n8n and the CRM share `caddy-net`, you can switch this to the
       internal `http://cri-crm:3000/api/intake/candidate` to skip the public round-trip. Verify it
       resolves first.)*
@@ -182,7 +182,7 @@ docker compose up -d --build crm   # rebuilds only the app container; migrations
 
 | Item | Value |
 |------|-------|
-| Production URL | `https://crm.corporaterecruitersinc.com` |
+| Production URL | `https://crm.example.com` |
 | Intake endpoint | `POST /api/intake/candidate` (header `X-API-Key`) |
 | Health endpoint | `GET /api/health` → `{"status":"ok"}` |
 | API key location | n8n credential `CRI CRM API Key` (HTTP Header Auth) |
@@ -193,7 +193,7 @@ docker compose up -d --build crm   # rebuilds only the app container; migrations
 | Shared network (with Caddy/n8n) | `caddy-net` (external) |
 | Internal network | `cri-crm-net` |
 | Workflow schedule | Every 30 minutes |
-| Admin / alert email | `zachary@corporaterecruitersinc.com` |
+| Admin / alert email | `admin@example.com` |
 
 ---
 

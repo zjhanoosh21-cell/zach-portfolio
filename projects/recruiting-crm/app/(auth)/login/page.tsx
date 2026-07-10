@@ -112,6 +112,15 @@ export default function LoginPage() {
             <p className="text-slate-500 text-sm mt-1">Sign in to your account to continue</p>
           </div>
 
+          <div className="mb-6 rounded border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-slate-700">
+            <p className="font-semibold text-slate-900">Portfolio demo — come on in</p>
+            <p className="mt-1">
+              Sign in with <span className="font-mono font-semibold">demo@example.com</span> /{" "}
+              <span className="font-mono font-semibold">DemoPass123!</span>. All candidates,
+              clients, and jobs inside are fictional demo data.
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">
@@ -120,7 +129,7 @@ export default function LoginPage() {
               <input
                 id="email"
                 type="email"
-                placeholder="you@corporaterecruitersinc.com"
+                placeholder="demo@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

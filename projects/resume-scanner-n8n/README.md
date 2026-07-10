@@ -28,5 +28,6 @@ resumes arrive by email, and scored candidates appear in the CRM minutes later.
 
 Live and in daily use by the client.
 
-> **Note:** the workflow JSON references the client's production domain — sanitize before any
-> public sharing. No credentials are embedded in the export.
+> **Note:** this export is sanitized — the client's production endpoints and addresses are
+> replaced with `example.com` placeholders, and no credentials are embedded (API keys live in
+> n8n credentials, referenced by ID only). The workflow file is `resume-scanner.json`.

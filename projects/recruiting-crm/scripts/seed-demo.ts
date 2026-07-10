@@ -10,8 +10,12 @@
  */
 
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
+
+const DEMO_EMAIL = "demo@example.com";
+const DEMO_PASSWORD = "DemoPass123!";
 
 const daysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000);
 const daysFromNow = (n: number) => new Date(Date.now() + n * 24 * 60 * 60 * 1000);
@@ -31,10 +35,23 @@ async function main() {
 
   console.log("✓ Cleared\n");
 
-  // ── ADMIN USER (for submittedById) ────────────────────────────────────────
-  const admin = await prisma.user.findFirst({ where: { isAdmin: true } })
-    ?? await prisma.user.findFirst();
-  if (!admin) throw new Error("No users found — run seed.ts first");
+  // ── DEMO USER (also used for submittedById) ───────────────────────────────
+  const admin = await prisma.user.upsert({
+    where: { email: DEMO_EMAIL },
+    update: {
+      passwordHash: await bcrypt.hash(DEMO_PASSWORD, 12),
+      isActive: true,
+      isAdmin: true,
+    },
+    create: {
+      email: DEMO_EMAIL,
+      name: "Demo Recruiter",
+      passwordHash: await bcrypt.hash(DEMO_PASSWORD, 12),
+      isActive: true,
+      isAdmin: true,
+    },
+  });
+  console.log(`✓ Demo user ready: ${DEMO_EMAIL} / ${DEMO_PASSWORD}\n`);
 
   // ── CLIENTS ───────────────────────────────────────────────────────────────
 

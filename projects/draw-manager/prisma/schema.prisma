@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Project {
+  id                   String    @id @default(uuid())
+  owner_name           String
+  address              String
+  county               String
+  contract_total_cents Int
+  status               String    @default("active")
+  draw_number          Int       @default(1)
+  start_date           String?
+  completed_at         DateTime?
+  notes                String?
+  created_at           DateTime  @default(now())
+  updated_at           DateTime  @updatedAt
+
+  line_items    LineItem[]
+  payments      Payment[]
+  change_orders ChangeOrder[]
+  documents     Document[]
+}
+
+model Vendor {
+  id           String   @id @default(uuid())
+  name         String
+  typical_work String?
+  phone        String?
+  created_at   DateTime @default(now())
+
+  line_items LineItem[]
+}
+
+model LineItem {
+  id                       String   @id @default(uuid())
+  project_id               String
+  vendor_id                String
+  work_description         String
+  line_number              String
+  original_contract_cents  Int      @default(0)
+  adjusted_contract_cents  Int      @default(0)
+  total_paid_cents         Int      @default(0)
+  retention_withheld_cents Int      @default(0)
+  lien_waiver_received     Boolean  @default(false)
+  lien_waiver_date         String?
+  category                 String   @default("other")
+  sort_order               Int      @default(0)
+  created_at               DateTime @default(now())
+
+  project       Project       @relation(fields: [project_id], references: [id])
+  vendor        Vendor        @relation(fields: [vendor_id], references: [id])
+  payments      Payment[]
+  change_orders ChangeOrder[]
+}
+
+model Payment {
+  id           String   @id @default(uuid())
+  line_item_id String
+  project_id   String
+  amount_cents Int
+  payment_date String
+  notes        String?
+  draw_number  Int
+  logged_at    DateTime @default(now())
+
+  line_item LineItem @relation(fields: [line_item_id], references: [id])
+  project   Project  @relation(fields: [project_id], references: [id])
+}
+
+model ChangeOrder {
+  id            String   @id @default(uuid())
+  line_item_id  String
+  project_id    String
+  amount_cents  Int
+  direction     String
+  reason        String?
+  approved_by   String?
+  approved_date String?
+  logged_at     DateTime @default(now())
+
+  line_item LineItem @relation(fields: [line_item_id], references: [id])
+  project   Project  @relation(fields: [project_id], references: [id])
+}
+
+model Setting {
+  key        String   @id
+  value      String
+  updated_at DateTime @updatedAt
+}
+
+model Document {
+  id            String   @id @default(uuid())
+  project_id    String
+  document_type String
+  draw_number   Int?
+  vendor_name   String?
+  file_path     String
+  is_draft      Boolean  @default(false)
+  generated_at  DateTime @default(now())
+
+  project Project @relation(fields: [project_id], references: [id])
+}

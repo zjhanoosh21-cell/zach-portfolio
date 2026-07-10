@@ -15,7 +15,7 @@ import crypto from "crypto";
 
 const prisma = new PrismaClient();
 
-const DEFAULT_EMAIL = process.env.SEED_EMAIL || "zachary@corporaterecruitersinc.com";
+const DEFAULT_EMAIL = process.env.SEED_EMAIL || "admin@example.com";
 const DEFAULT_NAME = process.env.SEED_NAME || "Zachary";
 const DEFAULT_PASSWORD = process.env.SEED_PASSWORD || "ChangeMe123!";
 

@@ -4,6 +4,19 @@ A lightweight operations tracker I built while standing up a web/AI services bus
 one place for the work (phases → tasks), the pipeline (prospects), and the running
 conversation (a shared notes feed), with multi-user auth.
 
+## Try it
+
+```bash
+cp .env.example .env   # defaults work for local demo (SQLite)
+npm install
+npm run db:migrate     # creates prisma/dev.db
+npm run db:seed
+npm run dev            # http://localhost:3000
+```
+
+Sign in with **`zach@example.com` / `password`** (seeded demo users — all seeded
+prospects, tasks, and playbook content are demo data).
+
 ## Features
 
 - **Phases & tasks** — ordered project phases with assignable, statused tasks
