@@ -80,7 +80,12 @@ export const authOptions: NextAuthOptions = {
   },
   cookies: {
     sessionToken: {
-      name: `next-auth.session-token`,
+      // Follow next-auth's default naming (__Secure- prefix on https) so the
+      // ~70 default getToken() calls in proxy.ts and app/api/** resolve the
+      // same cookie name; pinning a custom name breaks them all on https.
+      name: `${
+        process.env.NEXTAUTH_URL?.startsWith("https://") ? "__Secure-" : ""
+      }next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: "strict",
