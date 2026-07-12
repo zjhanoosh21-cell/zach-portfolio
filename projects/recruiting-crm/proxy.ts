@@ -6,6 +6,10 @@ export async function proxy(request: NextRequest) {
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
+    // authOptions pins the session cookie to this exact name (lib/auth.ts);
+    // without it getToken looks for __Secure-next-auth.session-token on
+    // https deployments and every signed-in user bounces back to /login.
+    cookieName: "next-auth.session-token",
   });
 
   const { pathname } = request.nextUrl;
