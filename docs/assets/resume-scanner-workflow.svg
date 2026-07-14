@@ -1,0 +1,367 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1594 1174 7916 804" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<defs>
+ <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+   <circle cx="1.5" cy="1.5" r="1.5" fill="#dbe2ea"/>
+ </pattern>
+ <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+   <path d="M 0 1 L 9 5 L 0 9 z" fill="#94a3b8"/>
+ </marker>
+</defs>
+<rect x="-1594" y="1174" width="7916" height="804" fill="#f4f6f9"/>
+<rect x="-1594" y="1174" width="7916" height="804" fill="url(#dots)"/>
+<path d="M 472 1462.0 C 522 1462.0, 446 1382.0, 496 1382.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 472 1462.0 C 522 1462.0, 446 1574.0, 496 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 472 1462.0 C 522 1462.0, 446 1574.0, 496 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 2168 1302.0 C 2218 1302.0, 2142 1302.0, 2192 1302.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 2756.0 1488 C 2756.0 1428, 2740.0 1400, 2740.0 1340" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-dasharray="6 5"/>
+<path d="M 2392 1302.0 C 2442 1302.0, 2366 1302.0, 2416 1302.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M -184 1478.0 C -134 1478.0, -210 1478.0, -160 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 40 1478.0 C 90 1478.0, -2 1574.0, 48 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 696 1382.0 C 746 1382.0, 670 1382.0, 720 1382.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 1368 1606.0 C 1444.0 1606.0, 1444.0 1478.0, 1520 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 1944 1398.0 C 1994 1398.0, 1918 1302.0, 1968 1302.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 1944 1398.0 C 1994 1398.0, 1918 1494.0, 1968 1494.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 2840 1302.0 C 2916.0 1302.0, 2916.0 1478.0, 2992 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 2884.0 1488 C 2884.0 1428, 2740.0 1400, 2740.0 1340" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-dasharray="6 5"/>
+<path d="M -408 1478.0 C -358 1478.0, -434 1478.0, -384 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 920 1382.0 C 970 1382.0, 894 1478.0, 944 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 920 1574.0 C 970 1574.0, 894 1478.0, 944 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 1284.0 1792 C 1284.0 1732, 1268.0 1704, 1268.0 1644" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-dasharray="6 5"/>
+<path d="M 1412.0 1792 C 1412.0 1732, 1268.0 1704, 1268.0 1644" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-dasharray="6 5"/>
+<path d="M 1720 1478.0 C 1770 1478.0, 1694 1398.0, 1744 1398.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 1720 1478.0 C 2356.0 1478.0, 2356.0 1478.0, 2992 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 1144 1478.0 C 1332.0 1478.0, 1332.0 1478.0, 1520 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 1144 1478.0 C 1194 1478.0, 1118 1606.0, 1168 1606.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 3192 1478.0 C 3242 1478.0, 3166 1382.0, 3216 1382.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 3192 1478.0 C 3242 1478.0, 3166 1574.0, 3216 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M -1304 1478.0 C -1254 1478.0, -1330 1478.0, -1280 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M -856 1478.0 C -806 1478.0, -882 1478.0, -832 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 2616 1302.0 C 2666 1302.0, 2590 1302.0, 2640 1302.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M -632 1478.0 C -582 1478.0, -658 1478.0, -608 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M -1080 1478.0 C -1030 1478.0, -1106 1478.0, -1056 1478.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 696 1574.0 C 746 1574.0, 670 1574.0, 720 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 4664 1574.0 C 4714 1574.0, 4638 1574.0, 4688 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 4888 1574.0 C 4938 1574.0, 4862 1574.0, 4912 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 5112 1574.0 C 5162 1574.0, 5086 1574.0, 5136 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 5336 1574.0 C 5386 1574.0, 5310 1574.0, 5360 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 5560 1574.0 C 5610 1574.0, 5534 1574.0, 5584 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 4216 1574.0 C 4266 1574.0, 4190 1574.0, 4240 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 4440 1574.0 C 4490 1574.0, 4414 1574.0, 4464 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 4440 1574.0 C 4490 1574.0, 4190 1798.0, 4240 1798.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 3640 1574.0 C 3716.0 1574.0, 3716.0 1574.0, 3792 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 3620.0 1760 C 3620.0 1700, 3540.0 1672, 3540.0 1612" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-dasharray="6 5"/>
+<path d="M 3992 1574.0 C 4042 1574.0, 3966 1574.0, 4016 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 5784 1574.0 C 5834 1574.0, 5758 1574.0, 5808 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 6008 1574.0 C 6058 1574.0, 5982 1574.0, 6032 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 3416 1574.0 C 3466 1574.0, 3390 1574.0, 3440 1574.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<path d="M 248 1574.0 C 298 1574.0, 222 1462.0, 272 1462.0" fill="none" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+<g>
+<rect x="272" y="1424" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="272" y="1424" width="6" height="76" rx="3" fill="#d97706"/>
+<circle cx="294" cy="1444" r="6" fill="#d97706"/>
+<text x="306" y="1448" font-size="11" fill="#94a3b8" letter-spacing="0.5">GATE</text>
+<text x="286" y="1468" font-size="12.5" font-weight="600" fill="#1e293b">File Type</text>
+</g>
+<g>
+<rect x="1968" y="1264" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="1968" y="1264" width="6" height="76" rx="3" fill="#64748b"/>
+<circle cx="1990" cy="1284" r="6" fill="#64748b"/>
+<text x="2002" y="1288" font-size="11" fill="#94a3b8" letter-spacing="0.5">FIELDS</text>
+<text x="1982" y="1308" font-size="12.5" font-weight="600" fill="#1e293b">Set Resume</text>
+</g>
+<g>
+<rect x="2656" y="1488" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="2656" y="1488" width="6" height="76" rx="3" fill="#c084fc"/>
+<circle cx="2678" cy="1508" r="6" fill="#c084fc"/>
+<text x="2690" y="1512" font-size="11" fill="#94a3b8" letter-spacing="0.5">LLM</text>
+<text x="2670" y="1532" font-size="12.5" font-weight="600" fill="#1e293b">o4-mini</text>
+</g>
+<g>
+<rect x="2192" y="1264" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="2192" y="1264" width="6" height="76" rx="3" fill="#475569"/>
+<circle cx="2214" cy="1284" r="6" fill="#475569"/>
+<text x="2226" y="1288" font-size="11" fill="#94a3b8" letter-spacing="0.5">CODE</text>
+<text x="2206" y="1308" font-size="12.5" font-weight="600" fill="#1e293b">Cleanup resume</text>
+</g>
+<g>
+<rect x="-384" y="1440" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="-384" y="1440" width="6" height="76" rx="3" fill="#4f46e5"/>
+<circle cx="-362" cy="1460" r="6" fill="#4f46e5"/>
+<text x="-350" y="1464" font-size="11" fill="#94a3b8" letter-spacing="0.5">FLOW</text>
+<text x="-370" y="1484" font-size="12.5" font-weight="600" fill="#1e293b">SPLIT - Attachments to</text>
+<text x="-370" y="1499" font-size="12.5" font-weight="600" fill="#1e293b">Items (1 file = 1 item)</text>
+</g>
+<g>
+<rect x="-160" y="1440" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="-160" y="1440" width="6" height="76" rx="3" fill="#d97706"/>
+<circle cx="-138" cy="1460" r="6" fill="#d97706"/>
+<text x="-126" y="1464" font-size="11" fill="#94a3b8" letter-spacing="0.5">GATE</text>
+<text x="-146" y="1484" font-size="12.5" font-weight="600" fill="#1e293b">GATE 1 - Allowed File</text>
+<text x="-146" y="1499" font-size="12.5" font-weight="600" fill="#1e293b">Types (PDF/DOC/DOCX)</text>
+</g>
+<g>
+<rect x="496" y="1344" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="496" y="1344" width="6" height="76" rx="3" fill="#0d9488"/>
+<circle cx="518" cy="1364" r="6" fill="#0d9488"/>
+<text x="530" y="1368" font-size="11" fill="#94a3b8" letter-spacing="0.5">EXTRACT</text>
+<text x="510" y="1388" font-size="12.5" font-weight="600" fill="#1e293b">EXTRACT - Text from PDF</text>
+</g>
+<g>
+<rect x="1168" y="1568" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="1168" y="1568" width="6" height="76" rx="3" fill="#7c3aed"/>
+<circle cx="1190" cy="1588" r="6" fill="#7c3aed"/>
+<text x="1202" y="1592" font-size="11" fill="#94a3b8" letter-spacing="0.5">AI STEP</text>
+<text x="1182" y="1612" font-size="12.5" font-weight="600" fill="#1e293b">GATE 2 - AI Classify</text>
+<text x="1182" y="1627" font-size="12.5" font-weight="600" fill="#1e293b">Document Type</text>
+</g>
+<g>
+<rect x="1744" y="1360" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="1744" y="1360" width="6" height="76" rx="3" fill="#d97706"/>
+<circle cx="1766" cy="1380" r="6" fill="#d97706"/>
+<text x="1778" y="1384" font-size="11" fill="#94a3b8" letter-spacing="0.5">GATE</text>
+<text x="1758" y="1404" font-size="12.5" font-weight="600" fill="#1e293b">GATE 2B - Resume Only</text>
+<text x="1758" y="1419" font-size="12.5" font-weight="600" fill="#1e293b">(type + confidence)</text>
+</g>
+<g>
+<rect x="2640" y="1264" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="2640" y="1264" width="6" height="76" rx="3" fill="#7c3aed"/>
+<circle cx="2662" cy="1284" r="6" fill="#7c3aed"/>
+<text x="2674" y="1288" font-size="11" fill="#94a3b8" letter-spacing="0.5">AI STEP</text>
+<text x="2654" y="1308" font-size="12.5" font-weight="600" fill="#1e293b">ANALYZE - CRI Resume</text>
+<text x="2654" y="1323" font-size="12.5" font-weight="600" fill="#1e293b">Scan (Structured)</text>
+</g>
+<g>
+<rect x="2784" y="1488" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="2784" y="1488" width="6" height="76" rx="3" fill="#c084fc"/>
+<circle cx="2806" cy="1508" r="6" fill="#c084fc"/>
+<text x="2818" y="1512" font-size="11" fill="#94a3b8" letter-spacing="0.5">PARSER</text>
+<text x="2798" y="1532" font-size="12.5" font-weight="600" fill="#1e293b">FORMAT - Parse to Clean</text>
+<text x="2798" y="1547" font-size="12.5" font-weight="600" fill="#1e293b">JSON</text>
+</g>
+<g>
+<rect x="3216" y="1344" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="3216" y="1344" width="6" height="76" rx="3" fill="#dc2626"/>
+<circle cx="3238" cy="1364" r="6" fill="#dc2626"/>
+<text x="3250" y="1368" font-size="11" fill="#94a3b8" letter-spacing="0.5">GMAIL</text>
+<text x="3230" y="1388" font-size="12.5" font-weight="600" fill="#1e293b">SEND - Email Me Results</text>
+<text x="3230" y="1403" font-size="12.5" font-weight="600" fill="#1e293b">+ Attach Resume</text>
+</g>
+<g>
+<rect x="-608" y="1440" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="-608" y="1440" width="6" height="76" rx="3" fill="#475569"/>
+<circle cx="-586" cy="1460" r="6" fill="#475569"/>
+<text x="-574" y="1464" font-size="11" fill="#94a3b8" letter-spacing="0.5">CODE</text>
+<text x="-594" y="1484" font-size="12.5" font-weight="600" fill="#1e293b">Code in JavaScript</text>
+</g>
+<g>
+<rect x="720" y="1344" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="720" y="1344" width="6" height="76" rx="3" fill="#64748b"/>
+<circle cx="742" cy="1364" r="6" fill="#64748b"/>
+<text x="754" y="1368" font-size="11" fill="#94a3b8" letter-spacing="0.5">FIELDS</text>
+<text x="734" y="1388" font-size="12.5" font-weight="600" fill="#1e293b">Edit Fields</text>
+</g>
+<g>
+<rect x="720" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="720" y="1536" width="6" height="76" rx="3" fill="#64748b"/>
+<circle cx="742" cy="1556" r="6" fill="#64748b"/>
+<text x="754" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">FIELDS</text>
+<text x="734" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Edit Fields1</text>
+</g>
+<g>
+<rect x="1184" y="1792" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="1184" y="1792" width="6" height="76" rx="3" fill="#c084fc"/>
+<circle cx="1206" cy="1812" r="6" fill="#c084fc"/>
+<text x="1218" y="1816" font-size="11" fill="#94a3b8" letter-spacing="0.5">LLM</text>
+<text x="1198" y="1836" font-size="12.5" font-weight="600" fill="#1e293b">OpenAI Chat Model</text>
+</g>
+<g>
+<rect x="1312" y="1792" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="1312" y="1792" width="6" height="76" rx="3" fill="#c084fc"/>
+<circle cx="1334" cy="1812" r="6" fill="#c084fc"/>
+<text x="1346" y="1816" font-size="11" fill="#94a3b8" letter-spacing="0.5">PARSER</text>
+<text x="1326" y="1836" font-size="12.5" font-weight="600" fill="#1e293b">Structured Output Parser</text>
+</g>
+<g>
+<rect x="1520" y="1440" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="1520" y="1440" width="6" height="76" rx="3" fill="#4f46e5"/>
+<circle cx="1542" cy="1460" r="6" fill="#4f46e5"/>
+<text x="1554" y="1464" font-size="11" fill="#94a3b8" letter-spacing="0.5">FLOW</text>
+<text x="1534" y="1484" font-size="12.5" font-weight="600" fill="#1e293b">Merge1</text>
+</g>
+<g>
+<rect x="944" y="1440" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="944" y="1440" width="6" height="76" rx="3" fill="#64748b"/>
+<circle cx="966" cy="1460" r="6" fill="#64748b"/>
+<text x="978" y="1464" font-size="11" fill="#94a3b8" letter-spacing="0.5">FIELDS</text>
+<text x="958" y="1484" font-size="12.5" font-weight="600" fill="#1e293b">Edit Fields4</text>
+</g>
+<g>
+<rect x="2992" y="1440" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="2992" y="1440" width="6" height="76" rx="3" fill="#4f46e5"/>
+<circle cx="3014" cy="1460" r="6" fill="#4f46e5"/>
+<text x="3026" y="1464" font-size="11" fill="#94a3b8" letter-spacing="0.5">FLOW</text>
+<text x="3006" y="1484" font-size="12.5" font-weight="600" fill="#1e293b">Merge5</text>
+</g>
+<g>
+<rect x="-1504" y="1440" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="-1504" y="1440" width="6" height="76" rx="3" fill="#16a34a"/>
+<circle cx="-1482" cy="1460" r="6" fill="#16a34a"/>
+<text x="-1470" y="1464" font-size="11" fill="#94a3b8" letter-spacing="0.5">TRIGGER</text>
+<text x="-1490" y="1484" font-size="12.5" font-weight="600" fill="#1e293b">Schedule Trigger</text>
+</g>
+<g>
+<rect x="-1056" y="1440" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="-1056" y="1440" width="6" height="76" rx="3" fill="#4f46e5"/>
+<circle cx="-1034" cy="1460" r="6" fill="#4f46e5"/>
+<text x="-1022" y="1464" font-size="11" fill="#94a3b8" letter-spacing="0.5">FLOW</text>
+<text x="-1042" y="1484" font-size="12.5" font-weight="600" fill="#1e293b">Split Out1</text>
+</g>
+<g>
+<rect x="2416" y="1264" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="2416" y="1264" width="6" height="76" rx="3" fill="#475569"/>
+<circle cx="2438" cy="1284" r="6" fill="#475569"/>
+<text x="2450" y="1288" font-size="11" fill="#94a3b8" letter-spacing="0.5">CODE</text>
+<text x="2430" y="1308" font-size="12.5" font-weight="600" fill="#1e293b">Get name</text>
+</g>
+<g>
+<rect x="-832" y="1440" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="-832" y="1440" width="6" height="76" rx="3" fill="#dc2626"/>
+<circle cx="-810" cy="1460" r="6" fill="#dc2626"/>
+<text x="-798" y="1464" font-size="11" fill="#94a3b8" letter-spacing="0.5">GMAIL</text>
+<text x="-818" y="1484" font-size="12.5" font-weight="600" fill="#1e293b">Get attachments</text>
+</g>
+<g>
+<rect x="-1280" y="1440" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="-1280" y="1440" width="6" height="76" rx="3" fill="#dc2626"/>
+<circle cx="-1258" cy="1460" r="6" fill="#dc2626"/>
+<text x="-1246" y="1464" font-size="11" fill="#94a3b8" letter-spacing="0.5">GMAIL</text>
+<text x="-1266" y="1484" font-size="12.5" font-weight="600" fill="#1e293b">Get many messages1</text>
+</g>
+<g>
+<rect x="496" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="496" y="1536" width="6" height="76" rx="3" fill="#0d9488"/>
+<circle cx="518" cy="1556" r="6" fill="#0d9488"/>
+<text x="530" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">EXTRACT</text>
+<text x="510" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">EXTRACT – Text from</text>
+<text x="510" y="1595" font-size="12.5" font-weight="600" fill="#1e293b">DOC/DOCX1</text>
+</g>
+<g>
+<rect x="4464" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="4464" y="1536" width="6" height="76" rx="3" fill="#475569"/>
+<circle cx="4486" cy="1556" r="6" fill="#475569"/>
+<text x="4498" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">CODE</text>
+<text x="4478" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Prep Data</text>
+</g>
+<g>
+<rect x="4688" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="4688" y="1536" width="6" height="76" rx="3" fill="#2563eb"/>
+<circle cx="4710" cy="1556" r="6" fill="#2563eb"/>
+<text x="4722" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">HTTP</text>
+<text x="4702" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Create (if new)</text>
+</g>
+<g>
+<rect x="4912" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="4912" y="1536" width="6" height="76" rx="3" fill="#2563eb"/>
+<circle cx="4934" cy="1556" r="6" fill="#2563eb"/>
+<text x="4946" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">HTTP</text>
+<text x="4926" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Get All</text>
+</g>
+<g>
+<rect x="5136" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="5136" y="1536" width="6" height="76" rx="3" fill="#475569"/>
+<circle cx="5158" cy="1556" r="6" fill="#475569"/>
+<text x="5170" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">CODE</text>
+<text x="5150" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Code in JavaScript1</text>
+</g>
+<g>
+<rect x="5360" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="5360" y="1536" width="6" height="76" rx="3" fill="#2563eb"/>
+<circle cx="5382" cy="1556" r="6" fill="#2563eb"/>
+<text x="5394" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">HTTP</text>
+<text x="5374" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Apply to Thread</text>
+</g>
+<g>
+<rect x="5584" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="5584" y="1536" width="6" height="76" rx="3" fill="#2563eb"/>
+<circle cx="5606" cy="1556" r="6" fill="#2563eb"/>
+<text x="5618" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">HTTP</text>
+<text x="5598" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">HTTP Request</text>
+</g>
+<g>
+<rect x="4016" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="4016" y="1536" width="6" height="76" rx="3" fill="#475569"/>
+<circle cx="4038" cy="1556" r="6" fill="#475569"/>
+<text x="4050" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">CODE</text>
+<text x="4030" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Build CRM Payload</text>
+</g>
+<g>
+<rect x="4240" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="4240" y="1536" width="6" height="76" rx="3" fill="#2563eb"/>
+<circle cx="4262" cy="1556" r="6" fill="#2563eb"/>
+<text x="4274" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">HTTP</text>
+<text x="4254" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Post to CRM</text>
+</g>
+<g>
+<rect x="4240" y="1760" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="4240" y="1760" width="6" height="76" rx="3" fill="#dc2626"/>
+<circle cx="4262" cy="1780" r="6" fill="#dc2626"/>
+<text x="4274" y="1784" font-size="11" fill="#94a3b8" letter-spacing="0.5">GMAIL</text>
+<text x="4254" y="1804" font-size="12.5" font-weight="600" fill="#1e293b">CRM Error Alert</text>
+</g>
+<g>
+<rect x="3440" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="3440" y="1536" width="6" height="76" rx="3" fill="#7c3aed"/>
+<circle cx="3462" cy="1556" r="6" fill="#7c3aed"/>
+<text x="3474" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">AI STEP</text>
+<text x="3454" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">EXTRACT - Resume Data</text>
+</g>
+<g>
+<rect x="3520" y="1760" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="3520" y="1760" width="6" height="76" rx="3" fill="#c084fc"/>
+<circle cx="3542" cy="1780" r="6" fill="#c084fc"/>
+<text x="3554" y="1784" font-size="11" fill="#94a3b8" letter-spacing="0.5">LLM</text>
+<text x="3534" y="1804" font-size="12.5" font-weight="600" fill="#1e293b">OpenAI Chat Model1</text>
+</g>
+<g>
+<rect x="3792" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="3792" y="1536" width="6" height="76" rx="3" fill="#475569"/>
+<circle cx="3814" cy="1556" r="6" fill="#475569"/>
+<text x="3826" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">CODE</text>
+<text x="3806" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Parse EXTRACT Output</text>
+</g>
+<g>
+<rect x="5808" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="5808" y="1536" width="6" height="76" rx="3" fill="#475569"/>
+<circle cx="5830" cy="1556" r="6" fill="#475569"/>
+<text x="5842" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">CODE</text>
+<text x="5822" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Get Message IDs</text>
+</g>
+<g>
+<rect x="6032" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="6032" y="1536" width="6" height="76" rx="3" fill="#2563eb"/>
+<circle cx="6054" cy="1556" r="6" fill="#2563eb"/>
+<text x="6066" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">HTTP</text>
+<text x="6046" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Mark Emails as Read</text>
+</g>
+<g>
+<rect x="1968" y="1456" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="1968" y="1456" width="6" height="76" rx="3" fill="#dc2626"/>
+<circle cx="1990" cy="1476" r="6" fill="#dc2626"/>
+<text x="2002" y="1480" font-size="11" fill="#94a3b8" letter-spacing="0.5">GMAIL</text>
+<text x="1982" y="1500" font-size="12.5" font-weight="600" fill="#1e293b">Send a message</text>
+</g>
+<g>
+<rect x="3216" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="3216" y="1536" width="6" height="76" rx="3" fill="#475569"/>
+<circle cx="3238" cy="1556" r="6" fill="#475569"/>
+<text x="3250" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">CODE</text>
+<text x="3230" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Code in JavaScript2</text>
+</g>
+<g>
+<rect x="48" y="1536" width="200" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="48" y="1536" width="6" height="76" rx="3" fill="#0d9488"/>
+<circle cx="70" cy="1556" r="6" fill="#0d9488"/>
+<text x="82" y="1560" font-size="11" fill="#94a3b8" letter-spacing="0.5">EXTRACT</text>
+<text x="62" y="1580" font-size="12.5" font-weight="600" fill="#1e293b">Extract from File1</text>
+</g>
+</svg>

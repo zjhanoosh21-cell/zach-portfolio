@@ -114,6 +114,17 @@
   }
   .card-links { margin-top: auto; padding-top: 12px; display: flex; gap: 16px; font-weight: 600; font-size: 14.5px; }
 
+  /* n8n workflow strip */
+  .wf-strip {
+    overflow-x: auto; background: #f4f6f9; border-bottom: 1px solid var(--line);
+    -webkit-overflow-scrolling: touch;
+  }
+  .wf-strip img { display: block; height: 300px; width: auto; max-width: none; }
+  .wf-hint {
+    font-size: 12.5px; color: var(--ink-3); text-align: center;
+    padding: 8px 16px 0;
+  }
+
   /* Two-shot row inside wide cards */
   .shots-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
   .shots-2 > div { background: #0f172a; }
@@ -219,16 +230,21 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card wide">
+      <div class="wf-strip">
+        <img src="assets/resume-scanner-workflow.svg" alt="The full 44-node n8n resume-scanner workflow canvas" width="4200" loading="lazy">
+      </div>
+      <p class="wf-hint">← The actual 44-node workflow, rendered from its JSON — scroll sideways to walk the pipeline →</p>
       <div class="card-body">
         <p class="role">Feeds the CRM · in daily client use</p>
         <h3>AI Resume Scanner</h3>
         <p>
-          A 44-node n8n workflow that watches the firm's inbox, extracts and scores every resume
-          with an LLM, and posts structured candidates into the CRM's intake API — with retries,
-          dedup, and human-in-the-loop review on the other side.
+          An n8n workflow that watches the firm's inbox and turns raw email attachments into
+          scored CRM candidates: file-type gates, an LLM "is this even a resume?" classifier,
+          o4-mini structured scoring, create-if-new dedup into the CRM's intake API, and
+          Gmail-label bookkeeping that makes every run idempotent.
         </p>
-        <div class="stack"><span>n8n</span><span>OpenAI</span><span>Gmail API</span><span>REST</span></div>
+        <div class="stack"><span>n8n</span><span>OpenAI</span><span>Gmail API</span><span>Structured output</span><span>REST</span></div>
         <div class="card-links">
           <a href="https://github.com/zjhanoosh21-cell/zach-portfolio/tree/main/projects/resume-scanner-n8n" target="_blank" rel="noopener">Workflow + README</a>
         </div>

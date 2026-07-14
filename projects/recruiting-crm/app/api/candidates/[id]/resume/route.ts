@@ -84,6 +84,14 @@ export async function POST(
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Hosted demo runs on serverless (read-only filesystem) — no disk uploads.
+  if (process.env.DEMO_MODE === "1") {
+    return NextResponse.json(
+      { error: "File uploads are disabled in this hosted demo — clone the repo and run it locally to try them." },
+      { status: 403 }
+    );
+  }
+
   const { id } = await params;
 
   const candidate = await prisma.candidate.findUnique({

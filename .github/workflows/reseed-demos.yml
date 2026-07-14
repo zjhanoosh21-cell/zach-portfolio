@@ -1,0 +1,52 @@
+name: Reseed demo databases
+
+# Visitors can add, edit, and delete anything in the hosted demos (that's the
+# point) — this puts the fictional datasets back every night so the demos
+# always look right and can't be left in a broken state.
+#
+# Requires two repo secrets (Settings → Secrets → Actions):
+#   DEMO_DATABASE_URL_CRM   — Supabase session-pooler URL with ?schema=crm&sslmode=require
+#   DEMO_DATABASE_URL_DRAW  — Supabase session-pooler URL with ?sslmode=no-verify
+# Until they're set, the jobs skip cleanly instead of failing.
+on:
+  schedule:
+    - cron: "0 9 * * *" # daily 09:00 UTC (~4/5am ET)
+  workflow_dispatch: {}
+
+jobs:
+  reseed-crm:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DEMO_DATABASE_URL_CRM }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Reseed CRM demo data
+        working-directory: projects/recruiting-crm
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "DEMO_DATABASE_URL_CRM secret not set — skipping."
+            exit 0
+          fi
+          npm ci --no-audit --no-fund
+          npm run seed-demo
+
+  reseed-draw-manager:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DEMO_DATABASE_URL_DRAW }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Reseed draw-manager demo data
+        working-directory: projects/draw-manager
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "DEMO_DATABASE_URL_DRAW secret not set — skipping."
+            exit 0
+          fi
+          npm ci --no-audit --no-fund
+          npx prisma generate
+          npm run seed

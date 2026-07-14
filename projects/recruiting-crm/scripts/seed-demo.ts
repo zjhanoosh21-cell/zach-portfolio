@@ -53,6 +53,14 @@ async function main() {
   });
   console.log(`✓ Demo user ready: ${DEMO_EMAIL} / ${DEMO_PASSWORD}\n`);
 
+  // Admin PIN (guards exports + deletes). Demo PIN: 1234
+  await prisma.appSettings.upsert({
+    where: { id: "singleton" },
+    update: { deletionPinHash: await bcrypt.hash("1234", 12) },
+    create: { id: "singleton", deletionPinHash: await bcrypt.hash("1234", 12) },
+  });
+  console.log("✓ Admin PIN set to 1234 (exports/deletes)\n");
+
   // ── CLIENTS ───────────────────────────────────────────────────────────────
 
   const [harrington, meridian, voss] = await Promise.all([

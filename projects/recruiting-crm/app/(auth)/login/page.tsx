@@ -117,7 +117,8 @@ export default function LoginPage() {
             <p className="mt-1">
               Sign in with <span className="font-mono font-semibold">demo@example.com</span> /{" "}
               <span className="font-mono font-semibold">DemoPass123!</span>. All candidates,
-              clients, and jobs inside are fictional demo data.
+              clients, and jobs inside are fictional demo data. Admin PIN (for exports and
+              deletes): <span className="font-mono font-semibold">1234</span>.
             </p>
           </div>
 

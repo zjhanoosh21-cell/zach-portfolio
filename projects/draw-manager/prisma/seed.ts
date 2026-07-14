@@ -203,9 +203,100 @@ async function main() {
     }
   }
 
+  // ── SECOND PROJECT: completed build, so analytics have cross-project data ──
+  const done = await prisma.project.create({
+    data: {
+      owner_name: 'Marcus & Elena Trujillo',
+      address: '917 Foxglove Ln, Cedar Falls, MI',
+      county: 'Ottawa',
+      contract_total_cents: cents(512000),
+      status: 'completed',
+      draw_number: 5,
+      start_date: '2024-11-15',
+      completed_at: new Date('2026-02-27T12:00:00Z'),
+      notes: 'Closed out February 2026. Final draw released after punch list sign-off.',
+    },
+  })
+
+  const doneItems: Array<{ lineNumber: string; vendorName: string; work: string; contract: number; category: string }> = [
+    { lineNumber: '1', vendorName: 'Kent County Permits', work: 'Building permits', contract: 7400, category: 'permits' },
+    { lineNumber: '2', vendorName: 'Odyssey Construction', work: 'Pre-construction', contract: 5000, category: 'other' },
+    { lineNumber: '3', vendorName: 'Birch Hollow Excavating', work: 'Excavating and grading', contract: 21800, category: 'labor' },
+    { lineNumber: '4', vendorName: 'Lakeshore Concrete Co.', work: 'Foundation and flatwork', contract: 43200, category: 'materials' },
+    { lineNumber: '5', vendorName: 'Northwind Lumber Supply', work: 'Lumber, windows and truss package', contract: 52600, category: 'materials' },
+    { lineNumber: '6', vendorName: 'Ridgeline Framing Crew', work: 'Framing and porches', contract: 41500, category: 'labor' },
+    { lineNumber: '7', vendorName: 'Cedar & Stone Roofing', work: 'Roofing L & M', contract: 15300, category: 'materials' },
+    { lineNumber: '8', vendorName: 'ClearFlow Plumbing', work: 'Plumbing L & M', contract: 19700, category: 'mep' },
+    { lineNumber: '9', vendorName: 'Current Electric LLC', work: 'Electrical L & M', contract: 18200, category: 'mep' },
+    { lineNumber: '10', vendorName: 'BlueFlame Mechanical', work: 'HVAC', contract: 20400, category: 'mep' },
+    { lineNumber: '11', vendorName: 'Hollow Oak Drywall', work: 'Insulation and drywall', contract: 31900, category: 'labor' },
+    { lineNumber: '12', vendorName: 'Maplecrest Cabinets', work: 'Cabinetry and countertops', contract: 27300, category: 'materials' },
+    { lineNumber: '13', vendorName: 'Harbor Tile & Flooring', work: 'Flooring throughout', contract: 24100, category: 'materials' },
+    { lineNumber: '14', vendorName: 'Summit Painting Co.', work: 'Paint, interior and exterior', contract: 17800, category: 'labor' },
+    { lineNumber: '15', vendorName: 'Stonebridge Masonry', work: 'Brick and stone veneer', contract: 33600, category: 'labor' },
+    { lineNumber: '16', vendorName: 'Odyssey Construction', work: "Builder's fee", contract: 96000, category: 'other' },
+  ]
+
+  // One modest change order on the completed project
+  const doneCO = { lineNumber: '12', amount: 2150, reason: 'Island countertop upgrade to quartz', approvedBy: 'Elena Trujillo (owner)', approvedDate: '2025-08-04' }
+
+  for (let i = 0; i < doneItems.length; i++) {
+    const li = doneItems[i]
+    const vendorId = vendorMap[li.vendorName]
+    if (!vendorId) continue
+
+    const originalCents = cents(li.contract)
+    const coAdj = li.lineNumber === doneCO.lineNumber ? cents(doneCO.amount) : 0
+    const adjustedCents = originalCents + coAdj
+
+    const lineItem = await prisma.lineItem.create({
+      data: {
+        project_id: done.id,
+        vendor_id: vendorId,
+        work_description: li.work,
+        line_number: li.lineNumber,
+        original_contract_cents: originalCents,
+        adjusted_contract_cents: adjustedCents,
+        total_paid_cents: adjustedCents, // completed: everything paid in full
+        lien_waiver_received: true,
+        lien_waiver_date: '2026-02-20',
+        category: li.category,
+        sort_order: i,
+      },
+    })
+
+    if (coAdj > 0) {
+      await prisma.changeOrder.create({
+        data: {
+          line_item_id: lineItem.id,
+          project_id: done.id,
+          amount_cents: coAdj,
+          direction: 'add',
+          reason: doneCO.reason,
+          approved_by: doneCO.approvedBy,
+          approved_date: doneCO.approvedDate,
+        },
+      })
+    }
+
+    // Spread payments across draws 1–5 for a realistic history
+    const draw = (i % 5) + 1
+    await prisma.payment.create({
+      data: {
+        line_item_id: lineItem.id,
+        project_id: done.id,
+        amount_cents: adjustedCents,
+        payment_date: `2025-0${Math.min(draw + 1, 9)}-15`,
+        notes: `Draw ${draw} payment`,
+        draw_number: draw,
+      },
+    })
+  }
+
   console.log('Seed complete!')
-  console.log(`Project: ${project.address}`)
-  console.log(`Line items: ${Object.keys(lineItemMap).length}`)
+  console.log(`Project 1 (in draw): ${project.address}`)
+  console.log(`Project 2 (completed): ${done.address}`)
+  console.log(`Line items: ${Object.keys(lineItemMap).length + doneItems.length}`)
   console.log(`Vendors: ${Object.keys(vendorMap).length}`)
 }
 

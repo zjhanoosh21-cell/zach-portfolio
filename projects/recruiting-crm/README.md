@@ -7,7 +7,8 @@ from the companion [resume-scanner n8n workflow](../resume-scanner-n8n/).
 
 ## Try the demo
 
-**Hosted:** https://zach-crm-demo.vercel.app — sign in with `demo@example.com` / `DemoPass123!`.
+**Hosted:** https://zach-crm-demo.vercel.app — sign in with `demo@example.com` / `DemoPass123!`
+(admin PIN for exports/deletes: `1234`; file uploads are disabled in the hosted demo).
 
 Or run it locally:
 
