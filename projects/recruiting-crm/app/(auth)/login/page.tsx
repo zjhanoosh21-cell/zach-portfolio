@@ -7,8 +7,9 @@ import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // Portfolio demo: pre-filled so reviewers can sign straight in.
+  const [email, setEmail] = useState("demo@example.com");
+  const [password, setPassword] = useState("DemoPass123!");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
@@ -115,10 +116,9 @@ export default function LoginPage() {
           <div className="mb-6 rounded border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-slate-700">
             <p className="font-semibold text-slate-900">Portfolio demo — come on in</p>
             <p className="mt-1">
-              Sign in with <span className="font-mono font-semibold">demo@example.com</span> /{" "}
-              <span className="font-mono font-semibold">DemoPass123!</span>. All candidates,
-              clients, and jobs inside are fictional demo data. Admin PIN (for exports and
-              deletes): <span className="font-mono font-semibold">1234</span>.
+              The demo credentials are already filled in — just press{" "}
+              <span className="font-semibold">Sign in</span>. All candidates, clients, and jobs
+              inside are fictional demo data.
             </p>
           </div>
 
