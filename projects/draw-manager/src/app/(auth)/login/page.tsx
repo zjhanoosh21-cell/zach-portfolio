@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
-  const [password, setPassword] = useState('')
+  // Portfolio demo: pre-filled so reviewers can sign straight in.
+  const [password, setPassword] = useState('demo2026')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -47,8 +48,9 @@ export default function LoginPage() {
         <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-gray-700">
           <p className="font-semibold text-gray-900">Portfolio demo</p>
           <p className="mt-1">
-            Sign in with password <span className="font-mono font-semibold">demo2026</span>.
-            Everything inside — the project, vendors, and dollar amounts — is fictional demo data.
+            The demo password is already filled in — just press{' '}
+            <span className="font-semibold">Sign in</span>. Everything inside — the projects,
+            vendors, and dollar amounts — is fictional demo data.
           </p>
         </div>
 

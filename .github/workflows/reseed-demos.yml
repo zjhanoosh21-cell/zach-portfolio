@@ -11,7 +11,10 @@ name: Reseed demo databases
 # Until they're set, the jobs skip cleanly instead of failing.
 on:
   schedule:
-    - cron: "0 9 * * *" # daily 09:00 UTC (~4/5am ET)
+    # Twice daily — the CRM seed stamps everything relative to run time
+    # ("30m ago", "2h ago"), so this keeps the dashboard's "New Today" and
+    # 1-day window populated no matter when a reviewer visits.
+    - cron: "0 9,16 * * *" # 09:00 + 16:00 UTC (~4am + 11am ET)
   workflow_dispatch: {}
 
 jobs:
