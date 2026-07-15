@@ -1,11 +1,7 @@
 # Zach Hanoosh — Portfolio
 
-Full-stack developer and AI-systems builder. I design, build, and run production software for
-small businesses — custom CRMs, AI automations, and client-facing web apps — owning everything
-from schema design through deployment.
-
 This repo collects the systems I've designed and built end-to-end: production client software,
-internal agency tooling, and personal projects.
+internal tooling, and personal projects.
 
 **🌐 Portfolio site:** https://zjhanoosh21-cell.github.io/zach-portfolio/
 
