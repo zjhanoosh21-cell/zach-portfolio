@@ -1,5 +1,12 @@
 # Sage — your personal financial advisor
 
+> **Work in progress** — Sage is an active personal project, not a finished product.
+
+**Hosted preview:** https://zach-sage-demo.vercel.app — fictional demo data, fully browsable.
+The live AI advisor is disabled in the preview (it runs against a real Claude API key when
+self-hosted); a seeded conversation on the Advisor page shows what a session looks like,
+including the tool calls it makes.
+
 A private, local-first finance app. Enter your accounts, income, budget, and goals —
 or just *tell Sage about them in chat* and it records everything for you, builds your
 budget, proposes goals, and gives advice grounded in your actual numbers.

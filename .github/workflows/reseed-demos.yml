@@ -7,6 +7,7 @@ name: Reseed demo databases
 # Requires two repo secrets (Settings → Secrets → Actions):
 #   DEMO_DATABASE_URL_CRM   — Supabase session-pooler URL with ?schema=crm&sslmode=require
 #   DEMO_DATABASE_URL_DRAW  — Supabase session-pooler URL with ?sslmode=no-verify
+#   DEMO_DATABASE_URL_SAGE  — Supabase session-pooler URL with ?schema=sage&sslmode=require
 # Until they're set, the jobs skip cleanly instead of failing.
 on:
   schedule:
@@ -31,6 +32,25 @@ jobs:
           fi
           npm ci --no-audit --no-fund
           npm run seed-demo
+
+  reseed-sage:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DEMO_DATABASE_URL_SAGE }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Reseed Sage demo data
+        working-directory: projects/sage-finance-advisor
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "DEMO_DATABASE_URL_SAGE secret not set — skipping."
+            exit 0
+          fi
+          npm ci --no-audit --no-fund
+          npx prisma generate --schema prisma/schema.postgres.prisma
+          npx tsx scripts/seed-demo.ts
 
   reseed-draw-manager:
     runs-on: ubuntu-latest

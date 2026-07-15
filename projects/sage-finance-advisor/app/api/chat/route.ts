@@ -17,6 +17,18 @@ export async function POST(req: NextRequest) {
     message: string;
   };
 
+  // Hosted preview: the advisor calls a live Claude API key when self-hosted,
+  // so it's switched off here rather than exposing a paid key publicly.
+  if (process.env.DEMO_MODE === "1") {
+    return Response.json(
+      {
+        error:
+          "The live AI advisor is turned off in this hosted preview — it runs against a real Claude API key. The seeded conversation below shows what a session looks like; clone the repo and add your own ANTHROPIC_API_KEY to talk to it.",
+      },
+      { status: 400 }
+    );
+  }
+
   if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
     return Response.json(
       { error: "No Anthropic API key configured. Add ANTHROPIC_API_KEY to .env.local and restart." },
