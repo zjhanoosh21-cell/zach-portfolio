@@ -22,8 +22,7 @@ internal tooling, and personal projects.
 | [Odyssey Marketing Site](projects/odyssey-website/) | The builder's public marketing site — 8 pages, gallery, SEO-first structure. **Live at [chooseodyssey.com](https://chooseodyssey.com)** | Static HTML/CSS/JS, Vercel edge | Live on the public web |
 | [Prospect Engine](projects/prospect-engine/) | Generates a fully branded proof-of-concept website per sales prospect — real logo, sampled brand colors, trade-matched content — served on a wildcard preview domain | Next.js dynamic routing, Vercel, JSON-driven site schema | Live (v2), used for real outreach |
 | [Sage — Personal Finance Advisor](projects/sage-finance-advisor/) | Local-first finance app with a Claude-powered advisor that updates your accounts, budget, and goals directly from conversation (streaming + tool use) | Next.js, Prisma + SQLite, Anthropic SDK, Recharts, Tailwind v4 | Personal project, feature-complete |
-| [Web Biz Tracker](projects/web-biz-tracker/) | Lightweight agency operations tracker — phases, tasks, prospects, and a shared activity feed with auth | Next.js, Prisma + SQLite | Earlier personal project |
-| [Agency AI Operating System](case-studies/ai-operating-system.md) | Case study: a git-based "shared brain" + three named AI teammates (PM, sales ops, content) that run a real agency on Claude Code | Claude Code, agent skills, markdown-as-database | Live, runs the agency daily |
+| [Web Biz Tracker](projects/web-biz-tracker/) | Lightweight operations tracker — phases, tasks, prospects, and a shared activity feed with auth | Next.js, Prisma + SQLite | Earlier personal project |
 
 ## What these show
 
@@ -31,8 +30,8 @@ internal tooling, and personal projects.
   business on: Dockerized deployment, migrations, API contracts between systems, and an
   AI pipeline with human-in-the-loop review.
 - **AI beyond chatbots** — LLMs wired into real workflows: tool-using agents (Sage), document
-  extraction and scoring (resume scanner), programmatic content/brand generation (Prospect
-  Engine), and agentic operations (the agency OS).
+  extraction and scoring (resume scanner), and programmatic content/brand generation
+  (Prospect Engine).
 - **Full-stack range** — schema design through UI polish, plus the unglamorous parts:
   deployment docs, entrypoint scripts, idempotent sync jobs, and secrets hygiene.
 

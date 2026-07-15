@@ -30,6 +30,6 @@ Next.js (App Router) · Prisma + SQLite · TypeScript · Tailwind
 
 ## Where it fits
 
-This was the precursor to the git-based [Agency AI Operating System](../../case-studies/ai-operating-system.md)
-that eventually replaced it — the lesson being that for a two-person team, markdown files an
-AI can read and update beat a database app you have to maintain.
+Eventually replaced by a lighter git-and-markdown workflow — the lesson being that for a
+two-person team, plain files an AI can read and update beat a database app you have to
+maintain.
