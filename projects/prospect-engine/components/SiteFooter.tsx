@@ -60,12 +60,12 @@ export default function SiteFooter({ prospect, colors, licenseLabel }: SiteFoote
         <span>
           Website built by{' '}
           <a
-            href="https://adaptiveaiservices.com"
+            href="https://zjhanoosh21-cell.github.io/zach-portfolio/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-white/50 hover:text-white transition-colors"
           >
-            Adaptive AI Services
+            Zach Hanoosh
           </a>
         </span>
       </div>

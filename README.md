@@ -1,8 +1,8 @@
 # Zach Hanoosh — Portfolio
 
-Full-stack developer and AI-systems builder. Co-founder of **Adaptive AI Services**, a two-person
-agency building custom CRMs, AI automations, and client-facing web apps for small businesses —
-where I own the CRM, integration, and build side of the house.
+Full-stack developer and AI-systems builder. I design, build, and run production software for
+small businesses — custom CRMs, AI automations, and client-facing web apps — owning everything
+from schema design through deployment.
 
 This repo collects the systems I've designed and built end-to-end: production client software,
 internal agency tooling, and personal projects.

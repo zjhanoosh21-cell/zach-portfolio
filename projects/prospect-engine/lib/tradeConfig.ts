@@ -84,7 +84,7 @@ export const TRADE_CONFIG: Record<TradeType, TradeDefaults> = {
     licenseLabel: 'Licensed Landscape Contractor',
   },
   general: {
-    // Neutral ink/slate fallback — kept off our brand coral (#e8684a is the Adaptive mark;
+    // Neutral ink/slate fallback — kept off our brand coral (#e8684a is the studio brand mark;
     // it shouldn't be painted onto a prospect's site as a button/fill). A sampled logo color
     // overrides this; this is only the last-resort default.
     colors: {

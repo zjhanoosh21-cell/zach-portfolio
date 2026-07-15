@@ -57,8 +57,8 @@ Running list — check off each item. Sections are chronological.
 ### Get the code onto the VPS
 ```bash
 # If the monorepo isn't already cloned:
-git clone git@github.com:jasonkemp21/AdaptiveAIServices.git ~/AdaptiveAIServices
-cd ~/AdaptiveAIServices/clients/cri/crm
+git clone git@github.com:zjhanoosh21-cell/zach-portfolio.git ~/zach-portfolio
+cd ~/zach-portfolio/projects/recruiting-crm
 # Put your .env here (scp it up or create it). It is gitignored.
 ```
 
@@ -161,7 +161,7 @@ reads `o4-mini`.
 ### Backups
 - [ ] Cron the included script on the VPS:
   ```bash
-  0 2 * * * /home/<user>/AdaptiveAIServices/clients/cri/crm/scripts/backup-db.sh >> /var/log/cri-backup.log 2>&1
+  0 2 * * * /home/<user>/zach-portfolio/projects/recruiting-crm/scripts/backup-db.sh >> /var/log/cri-backup.log 2>&1
   ```
 - [ ] Test a restore before relying on it.
 

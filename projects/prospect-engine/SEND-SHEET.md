@@ -4,13 +4,13 @@
 Sender: **Zach** · First-touch channel: **text (SMS), 1:1 from your own phone** · Windows: weekday
 **10–11:30am or 2–4pm** prospect-local. **Queue the one follow-up ~3 days after each send, then stop.**
 
-- Link format: `preview.adaptiveaiservices.com/<slug>` (never the raw vercel URL).
+- Link format: `preview.example.com/<slug>` (never the raw vercel URL).
 - Drafted: 2026-06-13 · Planned first send: **2026-06-14** · Follow-up due: **~2026-06-17**.
 - Full method + voicemail script: `brain/playbooks/prospect-engine.md`. Update `PIPELINE.md` as each moves.
 
 ## The master text (paste, swap the **bold** bits)
 
-> Hey, is this **<Company>**? This is Zach — I run a small shop called Adaptive AI Services here in
+> Hey, is this **<Company>**? This is Zach — I run a small web shop here in
 > **Metro Detroit**. Noticed you guys don't have a website, so I went ahead and built you a quick one
 > to show you what it'd look like (**your real Google reviews are already in it**): **<preview link>**.
 > No catch, it's yours to keep. If you'd want it live on your own domain just text me back — or tell me
@@ -18,7 +18,7 @@ Sender: **Zach** · First-touch channel: **text (SMS), 1:1 from your own phone**
 
 - **Rows marked `NO-REVIEWS`** → delete the "(your real Google reviews are already in it)" clause.
 - **Out-of-Michigan rows** → change "here in Metro Detroit" to a neutral line ("I run a small shop
-  called Adaptive AI Services") since you're not local to them.
+  called <your shop>") since you're not local to them.
 - **Landline / no answer** → send the text anyway, then leave the voicemail (script in the playbook).
 
 ---

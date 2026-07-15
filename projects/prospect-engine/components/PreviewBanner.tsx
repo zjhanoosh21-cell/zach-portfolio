@@ -4,7 +4,7 @@ interface PreviewBannerProps {
   companyName: string
 }
 
-// Always coral — this is an Adaptive AI Services element, not the prospect's brand
+// Always coral — this is a studio-brand element, not the prospect’s brand
 export default function PreviewBanner({ companyName }: PreviewBannerProps) {
   return (
     <div
@@ -13,10 +13,10 @@ export default function PreviewBanner({ companyName }: PreviewBannerProps) {
     >
       <span className="opacity-90">
         This is a <strong>free preview site</strong> built for{' '}
-        <strong>{companyName}</strong> by Adaptive AI Services —{' '}
+        <strong>{companyName}</strong> — site preview —{' '}
       </span>
       <a
-        href="https://adaptiveaiservices.com/contact"
+        href="https://zjhanoosh21-cell.github.io/zach-portfolio/"
         target="_blank"
         rel="noopener noreferrer"
         className="underline font-semibold hover:opacity-80 transition-opacity"
